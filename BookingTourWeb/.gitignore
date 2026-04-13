@@ -1,0 +1,13 @@
+# Ch?n các thý m?c ch?a file build (.dll, .exe...)
+[Bb]in/
+[Oo]bj/
+
+# Ch?n file c?u h?nh cá nhân c?a Visual Studio
+.vs/
+*.user
+
+# Ch?n thý m?c c?a h? ði?u hành
+.DS_Store
+Thumbs.db
+**/obj/
+**/bin/
