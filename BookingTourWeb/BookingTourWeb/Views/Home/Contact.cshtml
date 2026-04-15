@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Liên Hệ";
+}
+
+<div class="pt-24 pb-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 items-start">
+
+            <div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-6">Kết nối với chúng tôi</h1>
+                <p class="text-lg text-gray-600 mb-8">Bạn có thắc mắc về tour hay cần một lịch trình riêng biệt? Đừng ngần ngại để lại lời nhắn.</p>
+
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-full bg-white flex items-center justify-center shadow-sm text-blue-600">📍</div>
+                        <div>
+                            <p class="font-bold">Địa chỉ</p>
+                            <p class="text-gray-600">123 Đường Trần Phú, Nha Trang, Khánh Hòa</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-full bg-white flex items-center justify-center shadow-sm text-blue-600">📞</div>
+                        <div>
+                            <p class="font-bold">Hotline</p>
+                            <p class="text-gray-600">0123.456.789</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-full bg-white flex items-center justify-center shadow-sm text-blue-600">📧</div>
+                        <div>
+                            <p class="font-bold">Email</p>
+                            <p class="text-gray-600">support@oceanwave.vn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+                <form class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Họ tên</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-blue-600 outline-none" placeholder="Nguyễn Văn A">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-blue-600 outline-none" placeholder="a@gmail.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Chủ đề</label>
+                        <input type="text" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-blue-600 outline-none" placeholder="Tư vấn đặt tour đoàn">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Lời nhắn</label>
+                        <textarea rows="4" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-blue-600 outline-none" placeholder="Tôi muốn hỏi về..."></textarea>
+                    </div>
+                    <button type="button" class="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-blue-600 transition-colors shadow-lg"> Gửi Lời Nhắn </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
