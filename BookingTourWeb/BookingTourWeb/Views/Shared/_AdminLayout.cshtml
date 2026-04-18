@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OceanWave Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    @{
+        // 1. Lấy tên Controller hiện tại
+        var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+
+        // 2. Định nghĩa các class CSS cho Trạng thái Đang chọn (Active) và Không chọn (Inactive)
+        // Dựa trên đúng thiết kế gốc của bạn
+        string activeClass = "text-blue-600 bg-blue-50 border border-blue-100 font-bold";
+        string inactiveClass = "text-gray-600 hover:bg-gray-50 hover:text-blue-600 border border-transparent group font-medium";
+
+        // CSS cho icon
+        string activeIconClass = "text-blue-600";
+        string inactiveIconClass = "text-gray-400 group-hover:text-blue-500";
+    }
+
+    <div class="flex min-h-screen w-full">
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full z-50">
+            <div class="border-b px-6 py-5 flex items-center gap-3">
+                <div class="flex size-10 items-center justify-center rounded-lg bg-blue-600 text-white font-bold shadow-lg shadow-blue-200">
+                    OW
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-gray-900">OceanWave</h1>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-2 mt-4">
+                <p class="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Navigation</p>
+
+                <a asp-controller="Admin" asp-action="Index"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all @(currentController == "Admin" ? activeClass : inactiveClass)">
+                    <svg class="w-5 h-5 @(currentController == "Admin" ? activeIconClass : inactiveIconClass)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span class="text-sm">Dashboard</span>
+                </a>
+
+                <a asp-controller="Bookings" asp-action="Index"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all @(currentController == "Bookings" ? activeClass : inactiveClass)">
+                    <svg class="w-5 h-5 @(currentController == "Bookings" ? activeIconClass : inactiveIconClass)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <span class="text-sm">Quản lý Bookings</span>
+                </a>
+
+                <a asp-controller="ToursAdmin" asp-action="Index"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all @(currentController == "ToursAdmin" ? activeClass : inactiveClass)">
+                    <svg class="w-5 h-5 @(currentController == "ToursAdmin" ? activeIconClass : inactiveIconClass)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="text-sm">Quản lý Tours</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t">
+                <button class="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-xl transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    <span class="text-sm font-bold">Đăng xuất</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col ml-64">
+            <header class="h-16 bg-white border-b border-gray-200 sticky top-0 z-40 px-8 flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-400">Trang</span>
+                    <span class="text-gray-300">/</span>
+                    <span class="text-gray-900 font-semibold">@ViewData["Title"]</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 pl-4 border-l">
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-gray-900 leading-tight">Admin User</p>
+                            <p class="text-[11px] text-green-500 font-bold uppercase">Online</p>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff" class="size-10 rounded-full border-2 border-white shadow-sm" />
+                    </div>
+                </div>
+            </header>
+
+            <main class="p-8">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
