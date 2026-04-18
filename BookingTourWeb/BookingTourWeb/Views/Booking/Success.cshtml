@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Đặt Tour Thành Công";
+}
+
+<div class="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4 pt-20">
+    <div class="max-w-md w-full bg-white p-8 rounded-3xl shadow-lg border border-gray-100 text-center relative overflow-hidden">
+
+        <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-green-100 mb-6">
+            <svg class="h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Đặt Tour Thành Công!</h2>
+
+        <p class="text-gray-500 text-lg mb-8 leading-relaxed">
+            Cảm ơn bạn đã lựa chọn OceanWave. Đơn đặt tour của bạn đã được ghi nhận. Tư vấn viên của chúng tôi sẽ gọi điện lại cho bạn trong thời gian sớm nhất để xác nhận và hướng dẫn thanh toán.
+        </p>
+
+        <div class="space-y-4">
+            <a asp-controller="Tour" asp-action="Index" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md text-decoration-none">
+                Tiếp tục xem các Tour khác
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="block w-full bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold py-3.5 px-4 rounded-xl transition-all text-decoration-none">
+                Quay về Trang chủ
+            </a>
+        </div>
+    </div>
+</div>
