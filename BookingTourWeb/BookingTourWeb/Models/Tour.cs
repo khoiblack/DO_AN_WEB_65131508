@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookingTourWeb.Models // Lưu ý: Đổi BookingTourWeb thành tên Project của bạn nếu khác
@@ -16,6 +17,7 @@ namespace BookingTourWeb.Models // Lưu ý: Đổi BookingTourWeb thành tên Pr
         public string Location { get; set; }
 
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
         public string? Image { get; set; } // Dấu ? nghĩa là có thể để trống (null)
