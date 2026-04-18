@@ -1,0 +1,78 @@
+﻿@model List<BookingTourWeb.Models.Tour>
+
+@{
+    ViewData["Title"] = "Tất Cả Tour Du Lịch";
+}
+
+<section class="py-24 bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Khám Phá Các Tour Du Lịch</h1>
+                <p class="text-gray-500 text-lg">Tìm kiếm và lựa chọn chuyến đi hoàn hảo nhất cho bạn.</p>
+            </div>
+
+            <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-100">
+                <span class="px-4 text-sm font-medium text-gray-400">Tổng cộng: @Model.Count tour</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            @foreach (var tour in Model)
+            {
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col">
+                    <div class="relative h-60 overflow-hidden bg-gray-200">
+                        @{
+                            // Thuật toán thông minh xử lý đường dẫn ảnh
+                            string imageSrc = string.IsNullOrEmpty(tour.Image) ? "/images/default-tour.jpg" : tour.Image;
+
+                            // Nếu tên ảnh không bắt đầu bằng dấu "/" (tức là ảnh mới up chỉ có tên file)
+                            // hoặc không phải link http, thì tự động nối thêm đường dẫn thư mục vào
+                            if (!imageSrc.StartsWith("/") && !imageSrc.StartsWith("http"))
+                            {
+                                imageSrc = "/images/" + imageSrc;
+                            }
+                        }
+                        <img src="@imageSrc" alt="@tour.Name"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='/images/default-tour.jpg'" />
+
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full shadow-sm">
+                            <span class="text-blue-600 font-bold">@tour.Price.ToString("N0") VNĐ</span>
+                        </div>
+                    </div>
+
+                    <div class="p-5 flex-grow">
+                        <div class="flex items-center gap-1 text-gray-400 text-xs mb-2 uppercase tracking-widest font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            @tour.Location
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            @tour.Name
+                        </h3>
+
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <span class="flex items-center gap-1">⭐ @tour.Rating</span>
+                            <span class="flex items-center gap-1">🕒 @tour.Duration</span>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0">
+                        <a asp-controller="Tour" asp-action="Detail" asp-route-id="@tour.Id"
+                           class="block w-full text-center py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-blue-600 transition-colors">
+                            Xem Chi Tiết
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="text-center py-20">
+                <p class="text-gray-400 text-xl">Chưa có tour nào được đăng tải.</p>
+            </div>
+        }
+    </div>
+</section>
