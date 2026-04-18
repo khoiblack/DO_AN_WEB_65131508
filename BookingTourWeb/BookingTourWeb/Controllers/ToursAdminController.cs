@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookingTourWeb.Data;
 using BookingTourWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookingTourWeb.Controllers
 {
+    [Authorize]
     public class ToursAdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,7 +27,8 @@ namespace BookingTourWeb.Controllers
         // GET: ToursAdmin
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tours.ToListAsync());
+            var tours = await _context.Tours.ToListAsync();
+            return View(tours);
         }
 
         // GET: ToursAdmin/Details/5
@@ -80,7 +83,7 @@ namespace BookingTourWeb.Controllers
                     }
 
                     // 5. Lưu đường dẫn này vào cột Image để Database lưu lại
-                    tour.Image = "/images/" + fileName;
+                    tour.Image = fileName;
                 }
                 else
                 {
@@ -99,48 +102,47 @@ namespace BookingTourWeb.Controllers
         // GET: ToursAdmin/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var tour = await _context.Tours.FindAsync(id);
-            if (tour == null)
-            {
-                return NotFound();
-            }
+            if (tour == null) return NotFound();
+
             return View(tour);
         }
 
         // POST: ToursAdmin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Location,Price,Image,Duration,GroupSize,Rating,Reviews")] Tour tour)
+        public async Task<IActionResult> Edit(int id, Tour tour)
         {
-            if (id != tour.Id)
-            {
-                return NotFound();
-            }
+            if (id != tour.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // NẾU CÓ UP ẢNH MỚI: Xử lý lưu ảnh mới
+                    if (tour.ImageUpload != null)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(tour.ImageUpload.FileName);
+                        string uploadPath = Path.Combine(_env.WebRootPath, "images");
+                        string filePath = Path.Combine(uploadPath, fileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await tour.ImageUpload.CopyToAsync(fileStream);
+                        }
+                        tour.Image = fileName; // Cập nhật tên ảnh mới vào data
+                    }
+                    // NẾU KHÔNG UP ẢNH MỚI: Tên ảnh cũ đã được giữ lại nhờ thẻ <input type="hidden"> bên file View
+
                     _context.Update(tour);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TourExists(tour.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!TourExists(tour.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -150,17 +152,10 @@ namespace BookingTourWeb.Controllers
         // GET: ToursAdmin/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var tour = await _context.Tours
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tour == null)
-            {
-                return NotFound();
-            }
+            var tour = await _context.Tours.FirstOrDefaultAsync(m => m.Id == id);
+            if (tour == null) return NotFound();
 
             return View(tour);
         }
@@ -173,10 +168,19 @@ namespace BookingTourWeb.Controllers
             var tour = await _context.Tours.FindAsync(id);
             if (tour != null)
             {
-                _context.Tours.Remove(tour);
-            }
+                // TINH TẾ: Khi xóa Tour, xóa luôn file ảnh vật lý trong thư mục wwwroot để đỡ nặng máy
+                if (!string.IsNullOrEmpty(tour.Image) && tour.Image != "/images/default-tour.jpg")
+                {
+                    string imagePath = Path.Combine(_env.WebRootPath, "images", tour.Image);
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        System.IO.File.Delete(imagePath);
+                    }
+                }
 
-            await _context.SaveChangesAsync();
+                _context.Tours.Remove(tour);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
