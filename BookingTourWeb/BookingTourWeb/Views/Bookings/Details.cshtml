@@ -89,10 +89,10 @@
     </div>
 
     <div class="flex gap-4">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-blue-200 text-decoration-none text-center">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl text-center transition-all shadow-lg shadow-blue-200 text-decoration-none">
             Cập nhật trạng thái đơn
         </a>
-        <a asp-action="Delete" asp-route-id="@Model?.Id" class="bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 px-8 rounded-xl transition-all text-decoration-none text-center">
+        <a asp-action="Delete" asp-route-id="@Model?.Id" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3.5 px-4 rounded-xl text-center transition-all text-decoration-none">
             Xóa đơn hàng
         </a>
     </div>

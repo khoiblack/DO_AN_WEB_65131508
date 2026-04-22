@@ -3,68 +3,88 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">Tổng quan hệ thống</h1>
-    <p class="text-gray-500">Theo dõi doanh thu và hoạt động kinh doanh của OceanWave.</p>
+<div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Tổng quan hệ thống</h1>
+        <p class="text-gray-500">Theo dõi doanh thu và hoạt động kinh doanh của OceanWave.</p>
+    </div>
+    <div class="bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-sm font-medium border border-blue-100 flex items-center gap-2">
+        <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Dữ liệu đang cập nhật tự động
+    </div>
 </div>
 
-<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mb-8">
 
-    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tổng Đơn Hàng</h3>
-            <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-            </div>
+    <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 p-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
+            <svg class="w-32 h-32 text-emerald-900" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" /><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" /></svg>
         </div>
-        <div class="text-3xl font-bold text-gray-900 mb-1">@ViewBag.TotalBookings</div>
-        <p class="text-xs text-green-600 font-medium flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-            +12% <span class="text-gray-400 font-normal">so với tháng trước</span>
-        </p>
-    </div>
-
-    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tổng Doanh Thu</h3>
-            <div class="p-2 bg-green-50 rounded-lg text-green-600">
+        <div class="flex items-center justify-between mb-4 relative z-10">
+            <h3 class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Doanh thu thực tế</h3>
+            <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
         </div>
-        <div class="text-3xl font-bold text-gray-900 mb-1">$@ViewBag.TotalRevenue.ToString("N0")</div>
-        <p class="text-xs text-green-600 font-medium flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-            +8.5% <span class="text-gray-400 font-normal">so với tháng trước</span>
+        <div class="text-3xl font-black text-gray-900 mb-2 relative z-10">
+            @ViewBag.TotalRevenue.ToString("N0") <span class="text-lg font-medium text-gray-400">VNĐ</span>
+        </div>
+        <p class="text-xs text-gray-500 font-medium relative z-10 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đơn đã thanh toán
         </p>
     </div>
 
-    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Khách Hàng</h3>
-            <div class="p-2 bg-purple-50 rounded-lg text-purple-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+    <div class="bg-white rounded-3xl p-6 border border-amber-100 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 p-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
+            <svg class="w-32 h-32 text-amber-900" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
+        </div>
+        <div class="flex items-center justify-between mb-4 relative z-10">
+            <h3 class="text-xs font-bold text-amber-600 uppercase tracking-wider">Doanh thu chờ thu</h3>
+            <div class="p-2 bg-amber-50 rounded-xl text-amber-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
         </div>
-        <div class="text-3xl font-bold text-gray-900 mb-1">@ViewBag.TotalCustomers</div>
-        <p class="text-xs text-gray-400 mt-2">Số khách hàng duy nhất</p>
+        <div class="text-3xl font-black text-gray-900 mb-2 relative z-10">
+            @ViewBag.PendingRevenue.ToString("N0") <span class="text-lg font-medium text-gray-400">VNĐ</span>
+        </div>
+        <p class="text-xs text-gray-500 font-medium relative z-10 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span> Đơn chờ xác nhận
+        </p>
     </div>
 
-    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+    <div class="bg-white rounded-3xl p-6 border border-blue-100 shadow-sm hover:shadow-md transition-all">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Tour Đang Mở</h3>
-            <div class="p-2 bg-orange-50 rounded-lg text-orange-600">
+            <h3 class="text-xs font-bold text-blue-600 uppercase tracking-wider">Tổng Đơn Hàng</h3>
+            <div class="p-2 bg-blue-50 rounded-xl text-blue-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            </div>
+        </div>
+        <div class="text-3xl font-black text-gray-900 mb-2">@ViewBag.TotalBookings</div>
+        <p class="text-xs text-gray-500 mt-2">Toàn bộ lịch sử đặt tour</p>
+    </div>
+
+    <div class="bg-white rounded-3xl p-6 border border-purple-100 shadow-sm hover:shadow-md transition-all">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-bold text-purple-600 uppercase tracking-wider">Tour Đang Mở</h3>
+            <div class="p-2 bg-purple-50 rounded-xl text-purple-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
         </div>
-        <div class="text-3xl font-bold text-gray-900 mb-1">@ViewBag.TotalTours</div>
-        <p class="text-xs text-gray-400 mt-2">Gói du lịch đang hoạt động</p>
+        <div class="text-3xl font-black text-gray-900 mb-2">@ViewBag.TotalTours</div>
+        <p class="text-xs text-gray-500 mt-2">Gói du lịch đang hoạt động</p>
     </div>
 </div>
 
-<div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center">
-    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-600 mb-4">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+<div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-50/50 to-purple-50/50"></div>
+    <div class="relative z-10">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-200 mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+        </div>
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Chào mừng trở lại, Admin!</h2>
+        <p class="text-gray-500 max-w-lg mx-auto font-medium">Hệ thống đang hoạt động ổn định. Đừng quên gọi điện chốt đơn các khách hàng đang nằm trong mục Doanh thu chờ nhé!</p>
     </div>
-    <h2 class="text-xl font-bold text-gray-900 mb-2">Chào mừng trở lại, Admin!</h2>
-    <p class="text-gray-500 max-w-lg mx-auto">Hệ thống đang hoạt động ổn định. Bạn có thể sử dụng thanh menu bên trái để quản lý danh sách Tour và Đơn hàng của khách hàng.</p>
 </div>
