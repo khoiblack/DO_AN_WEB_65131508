@@ -21,6 +21,8 @@ namespace BookingTourWeb.Models
         public int NumberOfGuests { get; set; } // Số lượng khách
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; } // Tổng tiền
+                                                
+        public DateTime BookingDate { get; set; } = DateTime.Now;
 
         public string Status { get; set; } = "Chờ duyệt"; // Trạng thái đơn (Chờ duyệt, Đã thanh toán, Đã hủy)
 
