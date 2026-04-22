@@ -13,5 +13,6 @@ namespace BookingTourWeb.Data
         // Khai báo 2 bảng sẽ được tạo trong SQL Server
         public DbSet<Tour> Tours { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Account> Accounts { get; set; }
     }
 }
