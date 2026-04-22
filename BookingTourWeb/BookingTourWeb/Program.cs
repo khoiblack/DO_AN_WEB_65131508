@@ -1,6 +1,7 @@
 using BookingTourWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,13 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // N?u chýa ðãng nh?p s? b? ðu?i v? ðây
+        options.AccessDeniedPath = "/Account/AccessDenied"; // N?u không ð? quy?n
+        options.ExpireTimeSpan = TimeSpan.FromHours(2); // Th? t? có h?n 2 ti?ng
+    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,7 +40,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
