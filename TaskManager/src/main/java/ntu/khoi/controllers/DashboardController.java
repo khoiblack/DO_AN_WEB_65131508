@@ -128,4 +128,21 @@ public class DashboardController {
 
         return "redirect:/dashboard";
     }
+ 
+    @GetMapping("/task/xoa")
+    public String xoaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId,
+                             HttpSession session) {
+        
+        
+        String role = (String) session.getAttribute("USER_ROLE");
+        if (!"LEADER".equals(role)) {
+            return "redirect:/dashboard"; 
+        }
+
+        
+        nhiemVuRepo.deleteById(taskId);
+
+        
+        return "redirect:/dashboard";
+    }
 }
