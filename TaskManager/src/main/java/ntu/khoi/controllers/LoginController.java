@@ -25,8 +25,8 @@ public class LoginController {
 
     
     @PostMapping("/login")
-    public String processLogin(@RequestParam String username, 
-                               @RequestParam String password, 
+    public String processLogin(@RequestParam("username") String username, 
+                               @RequestParam("password") String password, 
                                HttpSession session, 
                                Model model) {
         
