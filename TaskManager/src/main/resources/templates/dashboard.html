@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bảng Điều Khiển - Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/dashboard"><i class="fa-solid fa-layer-group me-2"></i>HỆ THỐNG QUẢN LÝ CÔNG VIỆC</a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">
+                    Xin chào, <b class="text-warning" th:text="${userName}">Tên User</b> 
+                    (<span th:text="${userRole}">Role</span>)
+                </span>
+                <a href="/logout" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Đăng xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div th:if="${userRole == 'LEADER'}" class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold" style="color: #2c3e50;"><i class="fa-solid fa-folder-open me-2"></i>TỔNG QUAN DỰ ÁN</h4>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemDuAn">
+                    <i class="fa-solid fa-plus me-1"></i>Tạo dự án mới
+                </button>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-md-6" th:each="duAn : ${dsDuAn}">
+                    <a th:href="@{/dashboard(duAnId=${duAn.id})}" class="text-decoration-none text-dark">
+                        <div class="card border-0 shadow-sm border-start border-primary border-4 h-100"
+                             th:classappend="${duAn.id == selectedDuAnId} ? 'bg-primary-subtle border-start-0 border-end border-primary border-4' : ''">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold text-primary" th:text="${duAn.tenDuAn}">Tên Dự Án</h5>
+                                <p class="card-text text-muted mb-0" th:text="${duAn.moTa}">Mô tả dự án</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <hr th:if="${userRole == 'LEADER'}" class="my-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold m-0" style="color: #2c3e50;">
+                <i class="fa-solid fa-list-check me-2"></i>
+                DANH SÁCH NHIỆM VỤ 
+                <span th:if="${selectedDuAnId != null}" class="badge bg-warning text-dark fs-6 fw-normal">Đang lọc theo dự án</span>
+            </h4>
+            <div>
+                <a th:if="${selectedDuAnId != null}" href="/dashboard" class="btn btn-outline-secondary btn-sm me-2">
+                    <i class="fa-solid fa-eye me-1"></i>Xem tất cả việc
+                </a>
+                <button th:if="${userRole == 'LEADER'}" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalThemTask">
+                    <i class="fa-solid fa-plus me-1"></i>Giao việc mới
+                </button>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tiêu đề công việc</th>
+                            <th>Hạn chót (Deadline)</th>
+                            <th>Người thực hiện</th>
+                            <th>Trạng thái</th>
+                            <th class="text-center">Đổi nhanh tiến độ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="task : ${dsNhiemVu}">
+                            <td class="fw-bold text-muted" th:text="${'#' + task.id}">#1</td>
+                            <td class="fw-semibold text-primary" th:text="${task.tieuDe}">Tiêu đề</td>
+                            <td th:text="${task.deadline}" class="text-danger">2024-06-01</td>
+                            <td>
+                                <span class="badge bg-info text-dark" th:if="${task.nguoiThucHien != null}" th:text="${task.nguoiThucHien.hoTen}">Tên NV</span>
+                                <span class="badge bg-secondary" th:if="${task.nguoiThucHien == null}">Chưa giao</span>
+                            </td>
+                            <td>
+                                <span th:if="${task.trangThai == 'TODO'}" class="badge bg-secondary">CẦN LÀM</span>
+                                <span th:if="${task.trangThai == 'DOING'}" class="badge bg-warning text-dark">ĐANG LÀM</span>
+                                <span th:if="${task.trangThai == 'DONE'}" class="badge bg-success">HOÀN THÀNH</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/task/doitrangthai(id=${task.id}, status='TODO')}" class="btn btn-outline-secondary" title="Chuyển thành Cần Làm">Cần làm</a>
+                                    <a th:href="@{/task/doitrangthai(id=${task.id}, status='DOING')}" class="btn btn-outline-warning text-dark" title="Chuyển thành Đang Làm">Đang làm</a>
+                                    <a th:href="@{/task/doitrangthai(id=${task.id}, status='DONE')}" class="btn btn-outline-success" title="Chuyển thành Hoàn Thành">Xong</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div th:if="${dsNhiemVu.empty}" class="text-center py-4 text-muted">
+                    Hiện tại chưa có công việc nào!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalThemDuAn" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-folder-plus me-2"></i>THÊM DỰ ÁN MỚI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/duan/them" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên dự án</label>
+                            <input type="text" name="tenDuAn" class="form-control" required placeholder="Nhập tên dự án...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mô tả ngắn gọn</label>
+                            <textarea name="moTa" class="form-control" rows="3" placeholder="Nhập mục tiêu, công nghệ sử dụng..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary fw-bold">LƯU DỰ ÁN</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalThemTask" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-tasks me-2"></i>GIAO CÔNG VIỆC MỚI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/task/them" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tiêu đề công việc</label>
+                            <input type="text" name="tieuDe" class="form-control" required placeholder="Ví dụ: Thiết kế giao diện...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nội dung chi tiết</label>
+                            <textarea name="noiDung" class="form-control" rows="3" placeholder="Mô tả các đầu việc cần làm..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Hạn chót (Deadline)</label>
+                            <input type="date" name="deadline" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Thuộc dự án</label>
+                            <select name="duAnId" class="form-select">
+                                <option th:each="da : ${dsDuAn}" th:value="${da.id}" th:text="${da.tenDuAn}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Giao cho nhân viên</label>
+                            <select name="nhanVienId" class="form-select">
+                                <option th:each="nd : ${dsNguoiDung}" th:value="${nd.id}" th:text="${nd.hoTen}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-success fw-bold">PHAN CÔNG</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
