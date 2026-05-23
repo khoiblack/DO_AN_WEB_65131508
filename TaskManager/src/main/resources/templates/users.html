@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản Lý Nhân Sự - Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light overflow-hidden">
+
+    <div class="d-flex" style="height: 100vh;">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow-lg" style="width: 280px; z-index: 1000;">
+            <a href="/dashboard" class="d-flex align-items-center mb-4 mt-2 me-md-auto text-white text-decoration-none px-2">
+                <i class="fa-solid fa-layer-group fa-2x text-warning me-3"></i>
+                <span class="fs-5 fw-bold" style="letter-spacing: 1px;">TASK MANAGER</span>
+            </a>
+            <hr class="text-secondary border-2 opacity-50">
+            <ul class="nav nav-pills flex-column mb-auto gap-2">
+                <li><a href="/dashboard" class="nav-link text-white"><i class="fa-solid fa-house me-2 w-20px text-center"></i> Bảng điều khiển</a></li>
+                <hr class="text-secondary border-1 opacity-25 my-1">
+                <li><a href="/users" class="nav-link active bg-primary text-white"><i class="fa-solid fa-users-gear me-2 w-20px text-center"></i> Quản lý Nhân sự</a></li>
+                <li><a href="/dashboard" class="nav-link text-white"><i class="fa-solid fa-chart-pie me-2 text-secondary w-20px text-center"></i> Thống kê & Báo cáo</a></li>
+            </ul>
+            <hr class="text-secondary border-2 opacity-50">
+            <div class="dropdown px-2 mb-2">
+                <span class="text-warning fw-bold" th:text="${userName}"></span>
+            </div>
+        </div>
+
+        <div class="flex-grow-1 bg-light p-5 overflow-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h3 class="fw-bold text-dark m-0"><i class="fa-solid fa-users text-primary me-2"></i>Quản Lý Nhân Sự</h3>
+                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalThemUser">
+                    <i class="fa-solid fa-user-plus me-1"></i> Thêm tài khoản mới
+                </button>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-hover align-middle mb-0 bg-white">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3 px-4">ID</th>
+                                <th class="py-3">Tài khoản (Username)</th>
+                                <th class="py-3">Họ tên nhân viên</th>
+                                <th class="py-3">Chức vụ / Quyền</th>
+                                <th class="py-3 text-end px-4">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="u : ${dsNguoiDung}">
+                                <td class="px-4 fw-bold text-secondary" th:text="${'#' + u.id}"></td>
+                                <td class="fw-bold text-dark" th:text="${u.username}"></td>
+                                <td class="text-primary fw-semibold" th:text="${u.hoTen}"></td>
+                                <td>
+                                    <span th:if="${u.vaiTro == 'LEADER'}" class="badge bg-danger">QUẢN LÝ (LEADER)</span>
+                                    <span th:if="${u.vaiTro == 'MEMBER'}" class="badge bg-info text-dark">NHÂN VIÊN (MEMBER)</span>
+                                </td>
+                                <td class="text-end px-4">
+                                    <a th:href="@{/users/sua(id=${u.id})}" class="btn btn-sm btn-outline-warning text-dark shadow-sm"><i class="fa-solid fa-user-pen"></i> Sửa</a>
+                                    <a th:href="@{/users/xoa(id=${u.id})}" class="btn btn-sm btn-outline-danger ms-1 shadow-sm" onclick="return confirm('Xóa nhân sự này có thể ảnh hưởng đến các nhiệm vụ họ đang làm. Xác nhận xóa?');"><i class="fa-solid fa-user-xmark"></i> Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalThemUser" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i>TẠO TÀI KHOẢN MỚI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/users/them" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên đăng nhập (Username)</label>
+                            <input type="text" name="username" class="form-control" required placeholder="Gõ liền không dấu...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mật khẩu ban đầu</label>
+                            <input type="password" name="password" class="form-control" required placeholder="Nhập mật khẩu...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Họ và Tên</label>
+                            <input type="text" name="hoTen" class="form-control" required placeholder="Ví dụ: Nguyễn Văn A...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Phân quyền vai trò</label>
+                            <select name="vaiTro" class="form-select">
+                                <option value="MEMBER">MEMBER (Nhân viên)</option>
+                                <option value="LEADER">LEADER (Quản lý)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary fw-bold">TẠO USER</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
