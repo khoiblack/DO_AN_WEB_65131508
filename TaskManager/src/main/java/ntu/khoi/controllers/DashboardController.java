@@ -195,4 +195,50 @@ public class DashboardController {
 
         return "redirect:/dashboard";
     }
+ 
+    @GetMapping("/duan/xoa")
+    public String xoaDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id, HttpSession session) {
+        if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
+
+        
+        java.util.List<ntu.khoi.models.NhiemVu> dsTaskTrongDuAn = nhiemVuRepo.findByDuAn_Id(id);
+        nhiemVuRepo.deleteAll(dsTaskTrongDuAn);
+
+        
+        duAnRepo.deleteById(id);
+        
+        return "redirect:/dashboard";
+    }
+
+   
+    @GetMapping("/duan/sua")
+    public String trangSuaDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id, HttpSession session, Model model) {
+        if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
+
+        ntu.khoi.models.DuAn da = duAnRepo.findById(id).orElse(null);
+        if (da == null) return "redirect:/dashboard";
+
+        model.addAttribute("duAn", da);
+        model.addAttribute("userName", session.getAttribute("USER_NAME"));
+        model.addAttribute("userRole", session.getAttribute("USER_ROLE"));
+
+        return "sua-duan"; 
+    }
+
+    
+    @PostMapping("/duan/capnhat")
+    public String capNhatDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id,
+                              @org.springframework.web.bind.annotation.RequestParam("tenDuAn") String tenDuAn,
+                              @org.springframework.web.bind.annotation.RequestParam("moTa") String moTa,
+                              HttpSession session) {
+        if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
+
+        ntu.khoi.models.DuAn da = duAnRepo.findById(id).orElse(null);
+        if (da != null) {
+            da.setTenDuAn(tenDuAn);
+            da.setMoTa(moTa);
+            duAnRepo.save(da); 
+        }
+        return "redirect:/dashboard";
+    }
 }
