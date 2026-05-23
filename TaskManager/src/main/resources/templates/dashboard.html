@@ -100,8 +100,15 @@
                                 </div>
                                 
                                 <a th:if="${userRole == 'LEADER'}" 
+                                   th:href="@{/task/sua(id=${task.id})}" 
+                                   class="btn btn-sm btn-warning text-dark ms-2" 
+                                   title="Sửa công việc">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <a th:if="${userRole == 'LEADER'}" 
                                    th:href="@{/task/xoa(id=${task.id})}" 
-                                   class="btn btn-sm btn-danger ms-2" 
+                                   class="btn btn-sm btn-danger ms-1" 
                                    onclick="return confirm('Sếp có chắc chắn muốn xóa vĩnh viễn công việc này không?');" 
                                    title="Xóa công việc">
                                     <i class="fa-solid fa-trash"></i>
