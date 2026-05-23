@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="html_head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title}">Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
+    </style>
+</head>
+
+<body>
+
+    <div th:fragment="sidebar(activePage)" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow-lg" style="width: 280px; z-index: 1000; height: 100vh;">
+        
+        <a href="/dashboard" class="d-flex align-items-center mb-4 mt-2 me-md-auto text-white text-decoration-none px-2">
+            <i class="fa-solid fa-layer-group fa-2x text-warning me-3"></i>
+            <span class="fs-5 fw-bold" style="letter-spacing: 1px;">TASK MANAGER</span>
+        </a>
+        
+        <hr class="text-secondary border-2 opacity-50">
+        
+        <ul class="nav nav-pills flex-column mb-auto gap-2">
+            
+            <li class="nav-item">
+                <a href="/dashboard" class="nav-link text-white" 
+                   th:classappend="${activePage == 'dashboard'} ? 'active bg-primary' : ''">
+                    <i class="fa-solid fa-house me-2 w-20px text-center"></i> Bảng điều khiển
+                </a>
+            </li>
+            
+            <hr class="text-secondary border-1 opacity-25 my-1">
+
+            <li th:if="${userRole == 'LEADER' and activePage == 'dashboard'}">
+                <a href="#" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#modalThemDuAn">
+                    <i class="fa-solid fa-folder-plus me-2 text-info w-20px text-center"></i> Tạo dự án mới
+                </a>
+            </li>
+            <li th:if="${userRole == 'LEADER' and activePage == 'dashboard'}">
+                <a href="#" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#modalThemTask">
+                    <i class="fa-solid fa-clipboard-check me-2 text-success w-20px text-center"></i> Giao việc mới
+                </a>
+            </li>
+
+            <hr th:if="${userRole == 'LEADER' and activePage == 'dashboard'}" class="text-secondary border-1 opacity-25 my-1">
+
+            <li th:if="${userRole == 'LEADER'}">
+                <a href="/users" class="nav-link text-white" 
+                   th:classappend="${activePage == 'users'} ? 'active bg-primary' : ''">
+                    <i class="fa-solid fa-users-gear me-2 text-warning w-20px text-center"></i> Quản lý Nhân sự
+                </a>
+            </li>
+            
+            <li th:if="${userRole == 'LEADER'}">
+                <a href="/reports" class="nav-link text-white" 
+                   th:classappend="${activePage == 'reports'} ? 'active bg-primary' : ''">
+                    <i class="fa-solid fa-chart-pie me-2 text-danger w-20px text-center"></i> Thống kê & Báo cáo
+                </a>
+            </li>
+
+            <hr class="text-secondary border-1 opacity-25 my-1">
+
+            <li>
+                <a href="/profile" class="nav-link text-white" 
+                   th:classappend="${activePage == 'profile'} ? 'active bg-primary' : ''">
+                    <i class="fa-solid fa-user-shield me-2 text-secondary w-20px text-center"></i> Cài đặt cá nhân
+                </a>
+            </li>
+        </ul>
+        
+        <hr class="text-secondary border-2 opacity-50">
+        
+        <div class="dropdown mt-2 mb-2">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 38px; height: 38px;">
+                    <i class="fa-solid fa-user text-white"></i>
+                </div>
+                <div>
+                    <strong class="d-block" th:text="${userName}">Tên User</strong>
+                    <small class="text-warning fw-bold" style="font-size: 0.75rem;" th:text="${userRole}">Role</small>
+                </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow w-100" aria-labelledby="dropdownUser">
+                <li><a class="dropdown-item text-danger fw-bold py-2" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
