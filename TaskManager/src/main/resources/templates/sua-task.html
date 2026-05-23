@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cập Nhật Nhiệm Vụ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/dashboard"><i class="fa-solid fa-layer-group me-2"></i>HỆ THỐNG QUẢN LÝ CÔNG VIỆC</a>
+            <a href="/dashboard" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>Quay lại Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 600px;">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-warning text-dark fw-bold text-center py-3">
+                <h5 class="m-0 fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i>CHỈNH SỬA NHIỆM VỤ <span th:text="${'#' + task.id}"></span></h5>
+            </div>
+            <div class="card-body p-4">
+                <form action="/task/capnhat" method="POST">
+                    <input type="hidden" name="id" th:value="${task.id}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tiêu đề công việc</label>
+                        <input type="text" name="tieuDe" th:value="${task.tieuDe}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nội dung chi tiết</label>
+                        <textarea name="noiDung" th:text="${task.noiDung}" class="form-control" rows="4"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Hạn chót (Deadline)</label>
+                        <input type="date" name="deadline" th:value="${task.deadline}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Thuộc dự án</label>
+                        <select name="duAnId" class="form-select">
+                            <option th:each="da : ${dsDuAn}" 
+                                    th:value="${da.id}" 
+                                    th:text="${da.tenDuAn}"
+                                    th:selected="${da.id == task.duAn?.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Giao cho nhân viên</label>
+                        <select name="nhanVienId" class="form-select">
+                            <option th:each="nd : ${dsNguoiDung}" 
+                                    th:value="${nd.id}" 
+                                    th:text="${nd.hoTen}"
+                                    th:selected="${nd.id == task.nguoiThucHien?.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between pt-2">
+                        <a href="/dashboard" class="btn btn-secondary px-4">Hủy bỏ</a>
+                        <button type="submit" class="btn btn-warning fw-bold px-4 text-dark">CẬP NHẬT</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
