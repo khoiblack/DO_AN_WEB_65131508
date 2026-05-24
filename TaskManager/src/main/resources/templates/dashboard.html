@@ -1,87 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bảng Điều Khiển - Task Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Tùy chỉnh thanh cuộn cho khu vực nội dung nhìn mượt mà hơn */
-        .main-content::-webkit-scrollbar { width: 6px; }
-        .main-content::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 10px; }
-    </style>
-</head>
-<body class="bg-light overflow-hidden"> <div class="d-flex" style="height: 100vh;">
+<head th:replace="~{fragments :: html_head('Bảng Điều Khiển - Task Manager')}"></head>
 
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow-lg" style="width: 280px; z-index: 1000;">
-            <a href="/dashboard" class="d-flex align-items-center mb-4 mt-2 me-md-auto text-white text-decoration-none px-2">
-                <i class="fa-solid fa-layer-group fa-2x text-warning me-3"></i>
-                <span class="fs-5 fw-bold" style="letter-spacing: 1px;">TASK MANAGER</span>
-            </a>
-            
-            <hr class="text-secondary border-2 opacity-50">
-            
-            <ul class="nav nav-pills flex-column mb-auto gap-2">
-                
-                <li class="nav-item">
-                    <a href="/dashboard" class="nav-link active bg-primary text-white" aria-current="page">
-                        <i class="fa-solid fa-house me-2 w-20px text-center"></i> Bảng điều khiển
-                    </a>
-                </li>
-                
-                <hr class="text-secondary border-1 opacity-25 my-1">
+<body class="bg-light overflow-hidden">
 
-                <li th:if="${userRole == 'LEADER'}">
-                    <a href="#" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#modalThemDuAn">
-                        <i class="fa-solid fa-folder-plus me-2 text-info w-20px text-center"></i> Tạo dự án mới
-                    </a>
-                </li>
-                <li th:if="${userRole == 'LEADER'}">
-                    <a href="#" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#modalThemTask">
-                        <i class="fa-solid fa-clipboard-check me-2 text-success w-20px text-center"></i> Giao việc mới
-                    </a>
-                </li>
-
-                <hr th:if="${userRole == 'LEADER'}" class="text-secondary border-1 opacity-25 my-1">
-
-                <li th:if="${userRole == 'LEADER'}">
-                    <a href="/users" class="nav-link text-white">
-                        <i class="fa-solid fa-users-gear me-2 text-warning w-20px text-center"></i> Quản lý Nhân sự
-                    </a>
-                </li>
-                <li th:if="${userRole == 'LEADER'}">
-                    <a href="/reports" class="nav-link text-white">
-                        <i class="fa-solid fa-chart-pie me-2 text-danger w-20px text-center"></i> Thống kê & Báo cáo
-                    </a>
-                </li>
-
-                <hr class="text-secondary border-1 opacity-25 my-1">
-
-                <li>
-                    <a href="/profile" class="nav-link text-white">
-                        <i class="fa-solid fa-user-shield me-2 text-secondary w-20px text-center"></i> Cài đặt tài khoản
-                    </a>
-                </li>
-            </ul>
-            
-            <hr class="text-secondary border-2 opacity-50">
-            
-            <div class="dropdown mt-2 mb-2">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle px-2" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center me-3 shadow-sm" style="width: 38px; height: 38px;">
-                        <i class="fa-solid fa-user text-white"></i>
-                    </div>
-                    <div>
-                        <strong class="d-block" th:text="${userName}">Tên User</strong>
-                        <small class="text-warning fw-bold" style="font-size: 0.75rem;" th:text="${userRole}">Role</small>
-                    </div>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow w-100" aria-labelledby="dropdownUser">
-                    <li><a class="dropdown-item text-danger fw-bold py-2" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất</a></li>
-                </ul>
-            </div>
-        </div>
+    <div class="d-flex" style="height: 100vh;">
+        
+        <div th:replace="~{fragments :: sidebar('dashboard')}"></div>
 
         <div class="flex-grow-1 bg-light p-5 overflow-auto main-content">
             
@@ -96,12 +21,11 @@
                 <h5 class="fw-bold mb-3" style="color: #2c3e50;"><i class="fa-solid fa-folder-open me-2 text-primary"></i>DANH SÁCH DỰ ÁN</h5>
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-4" th:each="duAn : ${dsDuAn}">
-                        <div class="card border-0 shadow-sm border-start border-primary border-4 h-100 position-relative transition-transform"
-                             th:classappend="${duAn.id == selectedDuAnId} ? 'bg-primary-subtle border-start-0 border-end border-primary border-4' : ''">
+                        <div class="card border-0 shadow-sm border-start border-primary border-4 h-100 position-relative">
                             <div class="card-body p-4">
                                 <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;" th:if="${userRole == 'LEADER'}">
-                                    <a th:href="@{/duan/sua(id=${duAn.id})}" class="btn btn-sm btn-outline-warning border-0 text-dark"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:href="@{/duan/xoa(id=${duAn.id})}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('CẢNH BÁO: Xóa dự án này sẽ xóa TOÀN BỘ công việc bên trong! Chắc chắn chưa?');"><i class="fa-solid fa-trash"></i></a>
+                                    <a th:href="@{/duan/sua(id=${duAn.id})}" class="btn btn-sm btn-outline-warning border-0 text-dark" title="Sửa Dự Án"><i class="fa-solid fa-pen"></i></a>
+                                    <a th:href="@{/duan/xoa(id=${duAn.id})}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('CẢNH BÁO: Xóa dự án này sẽ xóa TOÀN BỘ công việc bên trong!');" title="Xóa Dự Án"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                                 <a th:href="@{/dashboard(duAnId=${duAn.id})}" class="text-decoration-none text-dark d-block pe-4 mt-2">
                                     <h5 class="card-title fw-bold text-primary mb-2" th:text="${duAn.tenDuAn}">Tên Dự Án</h5>
@@ -157,8 +81,8 @@
                                         <a th:href="@{/task/doitrangthai(id=${task.id}, status='DOING')}" class="btn btn-warning text-dark border-warning" title="Đang Làm">D</a>
                                         <a th:href="@{/task/doitrangthai(id=${task.id}, status='DONE')}" class="btn btn-success border-success" title="Xong">D</a>
                                     </div>
-                                    <a th:if="${userRole == 'LEADER'}" th:href="@{/task/sua(id=${task.id})}" class="btn btn-sm btn-light border text-primary ms-2 shadow-sm"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:if="${userRole == 'LEADER'}" th:href="@{/task/xoa(id=${task.id})}" class="btn btn-sm btn-light border text-danger ms-1 shadow-sm" onclick="return confirm('Chắc chắn xóa?');"><i class="fa-solid fa-trash"></i></a>
+                                    <a th:if="${userRole == 'LEADER'}" th:href="@{/task/sua(id=${task.id})}" class="btn btn-sm btn-light border text-primary ms-2 shadow-sm" title="Sửa việc"><i class="fa-solid fa-pen"></i></a>
+                                    <a th:if="${userRole == 'LEADER'}" th:href="@{/task/xoa(id=${task.id})}" class="btn btn-sm btn-light border text-danger ms-1 shadow-sm" onclick="return confirm('Chắc chắn xóa?');" title="Xóa việc"><i class="fa-solid fa-trash"></i></a>
                                 </td>
                             </tr>
                         </tbody>
@@ -166,7 +90,6 @@
                     <div th:if="${dsNhiemVu.empty}" class="text-center py-5 text-muted">
                         <i class="fa-solid fa-inbox fa-3x mb-3 text-light"></i>
                         <h5 class="fw-bold">Chưa có công việc nào!</h5>
-                        <p class="mb-0">Hãy chọn "Giao việc mới" bên thanh Menu để bắt đầu.</p>
                     </div>
                 </div>
             </div>
@@ -174,75 +97,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalThemDuAn" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-folder-plus me-2"></i>THÊM DỰ ÁN MỚI</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="/duan/them" method="POST">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tên dự án</label>
-                            <input type="text" name="tenDuAn" class="form-control" required placeholder="Nhập tên dự án...">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Mô tả ngắn gọn</label>
-                            <textarea name="moTa" class="form-control" rows="3" placeholder="Nhập mục tiêu, công nghệ sử dụng..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary fw-bold">LƯU DỰ ÁN</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalThemTask" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-tasks me-2"></i>GIAO CÔNG VIỆC MỚI</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="/task/them" method="POST">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tiêu đề công việc</label>
-                            <input type="text" name="tieuDe" class="form-control" required placeholder="Ví dụ: Thiết kế giao diện...">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Nội dung chi tiết</label>
-                            <textarea name="noiDung" class="form-control" rows="3" placeholder="Mô tả các đầu việc cần làm..."></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Hạn chót (Deadline)</label>
-                            <input type="date" name="deadline" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Thuộc dự án</label>
-                            <select name="duAnId" class="form-select">
-                                <option th:each="da : ${dsDuAn}" th:value="${da.id}" th:text="${da.tenDuAn}"></option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Giao cho nhân viên</label>
-                            <select name="nhanVienId" class="form-select">
-                                <option th:each="nd : ${dsNguoiDung}" th:value="${nd.id}" th:text="${nd.hoTen}"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-success fw-bold">PHÂN CÔNG</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{modal-them-duan :: fragmentThemDuAn}"></div>
+    <div th:replace="~{modal-them-task :: fragmentThemTask}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
