@@ -17,7 +17,7 @@
                 </span>
             </div>
 
-            <div th:if="${userRole == 'LEADER'}" class="mb-5">
+            <div th:if="${userRole == 'LEADER'}" class="mb-4">
                 <h5 class="fw-bold mb-3" style="color: #2c3e50;"><i class="fa-solid fa-folder-open me-2 text-primary"></i>DANH SÁCH DỰ ÁN</h5>
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-4" th:each="duAn : ${dsDuAn}">
@@ -25,12 +25,36 @@
                             <div class="card-body p-4">
                                 <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;" th:if="${userRole == 'LEADER'}">
                                     <a th:href="@{/duan/sua(id=${duAn.id})}" class="btn btn-sm btn-outline-warning border-0 text-dark" title="Sửa Dự Án"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:href="@{/duan/xoa(id=${duAn.id})}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('CẢNH BÁO: Xóa dự án này sẽ xóa TOÀN BỘ công việc bên trong!');" title="Xóa Dự Án"><i class="fa-solid fa-trash"></i></a>
+                                    
+                                    <a th:href="@{/duan/dong(id=${duAn.id})}" class="btn btn-sm btn-outline-secondary border-0 text-secondary" onclick="return confirm('Xác nhận đóng dự án? Dự án sẽ được cất đi nhưng công việc bên trong vẫn được giữ lại trên thống kê.');" title="Đóng Dự Án"><i class="fa-solid fa-box-archive"></i></a>
+                                    
+                                    <a th:href="@{/duan/xoa(id=${duAn.id})}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('CẢNH BÁO: Xóa dự án này sẽ xóa TOÀN BỘ công việc bên trong!');" title="Xóa Vĩnh Viễn"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                                 <a th:href="@{/dashboard(duAnId=${duAn.id})}" class="text-decoration-none text-dark d-block pe-4 mt-2">
                                     <h5 class="card-title fw-bold text-primary mb-2" th:text="${duAn.tenDuAn}">Tên Dự Án</h5>
                                     <p class="card-text text-secondary mb-0" th:text="${duAn.moTa}" style="font-size: 0.9rem;">Mô tả dự án</p>
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${userRole == 'LEADER' and dsDuAnDaDong != null and !dsDuAnDaDong.empty}" class="mb-5">
+                <h6 class="fw-bold mb-3 text-secondary text-uppercase" style="letter-spacing: 1px;">
+                    <i class="fa-solid fa-box-archive me-2"></i>Dự án đã lưu trữ / Đóng
+                </h6>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4" th:each="duAn : ${dsDuAnDaDong}">
+                        <div class="card border-secondary h-100 position-relative bg-light opacity-75 shadow-sm" style="border-style: dashed !important; border-width: 2px;">
+                            <div class="card-body p-4">
+                                <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+                                    <a th:href="@{/duan/mo(id=${duAn.id})}" class="btn btn-sm btn-outline-success border-0 fw-bold" title="Kích hoạt lại dự án">
+                                        <i class="fa-solid fa-folder-open me-1"></i>Mở lại
+                                    </a>
+                                </div>
+                                <h5 class="card-title fw-bold text-secondary mb-1" th:text="${duAn.tenDuAn}">Tên Dự Án</h5>
+                                <p class="card-text text-muted mb-0" th:text="${duAn.moTa}" style="font-size: 0.85rem;">Mô tả</p>
                             </div>
                         </div>
                     </div>
