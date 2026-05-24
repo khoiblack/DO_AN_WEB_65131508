@@ -17,6 +17,7 @@ public class DuAn {
     
     @Column(name = "mo_ta")
     private String moTa;
+    private String trangThai = "OPEN";
 
     @JsonIgnore
     @OneToMany(mappedBy = "duAn")
@@ -45,6 +46,13 @@ public class DuAn {
 	public void setMoTa(String moTa) {
 		this.moTa = moTa;
 	}
+	public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
 
 	public List<NhiemVu> getDsNhiemVu() {
 		return dsNhiemVu;
