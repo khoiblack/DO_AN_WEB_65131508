@@ -40,19 +40,29 @@ public class DashboardController {
 
         
         if ("LEADER".equals(role)) {
-            model.addAttribute("dsDuAn", duAnRepo.findAll());
+            java.util.List<ntu.khoi.models.DuAn> tatCaDuAn = duAnRepo.findAll();
+            java.util.List<ntu.khoi.models.DuAn> duAnDangMo = new java.util.ArrayList<>();
+            java.util.List<ntu.khoi.models.DuAn> duAnDaDong = new java.util.ArrayList<>(); 
+            
+            for (ntu.khoi.models.DuAn d : tatCaDuAn) {
+                if (d.getTrangThai() == null || "OPEN".equals(d.getTrangThai())) {
+                    duAnDangMo.add(d);
+                } else if ("CLOSED".equals(d.getTrangThai())) {
+                    duAnDaDong.add(d); 
+                }
+            }
+            
+            model.addAttribute("dsDuAn", duAnDangMo); 
+            model.addAttribute("dsDuAnDaDong", duAnDaDong); 
             model.addAttribute("dsNguoiDung", nguoiDungRepo.findAll()); 
             
             if (duAnId != null) {
-                
                 model.addAttribute("dsNhiemVu", nhiemVuRepo.findByDuAn_Id(duAnId));
                 model.addAttribute("selectedDuAnId", duAnId);
             } else {
-                
                 model.addAttribute("dsNhiemVu", nhiemVuRepo.findAll());
             }
         } else {
-            
             model.addAttribute("dsNhiemVu", nhiemVuRepo.findByNguoiThucHien_Id(userId));
         }
 
@@ -238,6 +248,30 @@ public class DashboardController {
             da.setTenDuAn(tenDuAn);
             da.setMoTa(moTa);
             duAnRepo.save(da); 
+        }
+        return "redirect:/dashboard";
+    }
+ 
+    @GetMapping("/duan/dong")
+    public String dongDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id, HttpSession session) {
+        if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
+
+        ntu.khoi.models.DuAn da = duAnRepo.findById(id).orElse(null);
+        if (da != null) {
+            da.setTrangThai("CLOSED"); 
+            duAnRepo.save(da);
+        }
+        return "redirect:/dashboard";
+    }
+ 
+    @GetMapping("/duan/mo")
+    public String moDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id, HttpSession session) {
+        if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
+
+        ntu.khoi.models.DuAn da = duAnRepo.findById(id).orElse(null);
+        if (da != null) {
+            da.setTrangThai("OPEN"); 
+            duAnRepo.save(da);
         }
         return "redirect:/dashboard";
     }
