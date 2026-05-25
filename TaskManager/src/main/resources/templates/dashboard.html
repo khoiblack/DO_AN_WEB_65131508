@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments :: html_head('Bảng Điều Khiển - Task Manager')}"></head>
+<head th:replace="~{fragments :: html_head('Bảng Điều Khiển Admin - Task Manager')}"></head>
 
 <body class="bg-light overflow-hidden">
 
@@ -11,23 +11,21 @@
         <div class="flex-grow-1 bg-light p-5 overflow-auto main-content">
             
             <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                <h3 class="fw-bold text-dark m-0">Tổng Quan Hoạt Động</h3>
+                <h3 class="fw-bold text-dark m-0">Tổng Quan Hệ Thống (Leader)</h3>
                 <span class="badge bg-white text-dark border shadow-sm px-3 py-2 fs-6">
-                    <i class="fa-regular fa-clock me-2 text-primary"></i>Cập nhật theo thời gian thực
+                    <i class="fa-regular fa-clock me-2 text-primary"></i>Quyền kiểm soát toàn diện
                 </span>
             </div>
 
-            <div th:if="${userRole == 'LEADER'}" class="mb-4">
-                <h5 class="fw-bold mb-3" style="color: #2c3e50;"><i class="fa-solid fa-folder-open me-2 text-primary"></i>DANH SÁCH DỰ ÁN</h5>
+            <div class="mb-4">
+                <h5 class="fw-bold mb-3" style="color: #2c3e50;"><i class="fa-solid fa-folder-open me-2 text-primary"></i>DANH SÁCH DỰ ÁN CỦA CÔNG TY</h5>
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-4" th:each="duAn : ${dsDuAn}">
                         <div class="card border-0 shadow-sm border-start border-primary border-4 h-100 position-relative">
                             <div class="card-body p-4">
-                                <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;" th:if="${userRole == 'LEADER'}">
+                                <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
                                     <a th:href="@{/duan/sua(id=${duAn.id})}" class="btn btn-sm btn-outline-warning border-0 text-dark" title="Sửa Dự Án"><i class="fa-solid fa-pen"></i></a>
-                                    
-                                    <a th:href="@{/duan/dong(id=${duAn.id})}" class="btn btn-sm btn-outline-secondary border-0 text-secondary" onclick="return confirm('Xác nhận đóng dự án? Dự án sẽ được cất đi nhưng công việc bên trong vẫn được giữ lại trên thống kê.');" title="Đóng Dự Án"><i class="fa-solid fa-box-archive"></i></a>
-                                    
+                                    <a th:href="@{/duan/dong(id=${duAn.id})}" class="btn btn-sm btn-outline-secondary border-0 text-secondary" onclick="return confirm('Xác nhận đóng dự án này?');" title="Đóng Dự Án"><i class="fa-solid fa-box-archive"></i></a>
                                     <a th:href="@{/duan/xoa(id=${duAn.id})}" class="btn btn-sm btn-outline-danger border-0" onclick="return confirm('CẢNH BÁO: Xóa dự án này sẽ xóa TOÀN BỘ công việc bên trong!');" title="Xóa Vĩnh Viễn"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                                 <a th:href="@{/dashboard(duAnId=${duAn.id})}" class="text-decoration-none text-dark d-block pe-4 mt-2">
@@ -40,18 +38,16 @@
                 </div>
             </div>
 
-            <div th:if="${userRole == 'LEADER' and dsDuAnDaDong != null and !dsDuAnDaDong.empty}" class="mb-5">
+            <div th:if="${dsDuAnDaDong != null and !dsDuAnDaDong.empty}" class="mb-5">
                 <h6 class="fw-bold mb-3 text-secondary text-uppercase" style="letter-spacing: 1px;">
-                    <i class="fa-solid fa-box-archive me-2"></i>Dự án đã lưu trữ / Đóng
+                    <i class="fa-solid fa-box-archive me-2"></i>Dự án đã lưu trữ / Đóng
                 </h6>
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-4" th:each="duAn : ${dsDuAnDaDong}">
                         <div class="card border-secondary h-100 position-relative bg-light opacity-75 shadow-sm" style="border-style: dashed !important; border-width: 2px;">
                             <div class="card-body p-4">
                                 <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
-                                    <a th:href="@{/duan/mo(id=${duAn.id})}" class="btn btn-sm btn-outline-success border-0 fw-bold" title="Kích hoạt lại dự án">
-                                        <i class="fa-solid fa-folder-open me-1"></i>Mở lại
-                                    </a>
+                                    <a th:href="@{/duan/mo(id=${duAn.id})}" class="btn btn-sm btn-outline-success border-0 fw-bold"><i class="fa-solid fa-folder-open me-1"></i>Mở lại</a>
                                 </div>
                                 <h5 class="card-title fw-bold text-secondary mb-1" th:text="${duAn.tenDuAn}">Tên Dự Án</h5>
                                 <p class="card-text text-muted mb-0" th:text="${duAn.moTa}" style="font-size: 0.85rem;">Mô tả</p>
@@ -63,7 +59,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold m-0" style="color: #2c3e50;">
-                    <i class="fa-solid fa-list-check me-2 text-success"></i>BẢNG CÔNG VIỆC CHI TIẾT
+                    <i class="fa-solid fa-list-check me-2 text-success"></i>QUẢN LÝ TIẾN ĐỘ NHIỆM VỤ TIỂU TIẾT
                     <span th:if="${selectedDuAnId != null}" class="badge bg-warning text-dark fs-6 ms-2 fw-normal rounded-pill">Đang lọc theo dự án</span>
                 </h5>
             </div>
@@ -76,44 +72,47 @@
                                 <th class="py-3 px-4 text-muted">ID</th>
                                 <th class="py-3">Tiêu đề công việc</th>
                                 <th class="py-3">Hạn chót</th>
-                                <th class="py-3">Nhân sự</th>
+                                <th class="py-3">Nhân sự thực hiện</th>
                                 <th class="py-3">Trạng thái</th>
-                                <th class="py-3 text-end px-4">Thao tác</th>
+                                <th class="py-3 text-end px-4">Thao tác quản lý</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="task : ${dsNhiemVu}">
                                 <td class="fw-bold text-secondary px-4" th:text="${'#' + task.id}">#1</td>
-                                <td class="fw-bold text-dark" th:text="${task.tieuDe}">Tiêu đề</td>
-                                <td class="text-danger fw-semibold" style="font-size: 0.9rem;">
+                                <td>
+                                    <div class="fw-bold text-dark" th:text="${task.tieuDe}"></div>
+                                    <small class="text-muted" th:text="${task.duAn?.tenDuAn}"></small>
+                                </td>
+                                <td class="text-danger fw-semibold">
                                     <i class="fa-regular fa-calendar-xmark me-1"></i> <span th:text="${task.deadline}"></span>
                                 </td>
                                 <td>
                                     <span class="badge bg-info bg-opacity-25 text-info-emphasis border border-info px-2 py-1" th:if="${task.nguoiThucHien != null}">
-                                        <i class="fa-solid fa-user-astronaut me-1"></i> <span th:text="${task.nguoiThucHien.hoTen}"></span>
+                                        <i class="fa-solid fa-user me-1"></i> <span th:text="${task.nguoiThucHien.hoTen}"></span>
                                     </span>
                                     <span class="badge bg-secondary px-2 py-1" th:if="${task.nguoiThucHien == null}">Chưa giao</span>
                                 </td>
                                 <td>
-                                    <span th:if="${task.trangThai == 'TODO'}" class="badge bg-secondary px-3 py-2 rounded-pill shadow-sm">CẦN LÀM</span>
-                                    <span th:if="${task.trangThai == 'DOING'}" class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm">ĐANG LÀM</span>
-                                    <span th:if="${task.trangThai == 'DONE'}" class="badge bg-success px-3 py-2 rounded-pill shadow-sm">HOÀN THÀNH</span>
+                                    <span th:if="${task.trangThai == 'TODO'}" class="badge bg-secondary px-3 py-2 rounded-pill">CẦN LÀM</span>
+                                    <span th:if="${task.trangThai == 'DOING'}" class="badge bg-warning text-dark px-3 py-2 rounded-pill">ĐANG LÀM</span>
+                                    <span th:if="${task.trangThai == 'DONE'}" class="badge bg-success px-3 py-2 rounded-pill">HOÀN THÀNH</span>
                                 </td>
                                 <td class="text-end px-4">
                                     <div class="btn-group btn-group-sm shadow-sm">
-                                        <a th:href="@{/task/doitrangthai(id=${task.id}, status='TODO')}" class="btn btn-light border" title="Cần Làm">T</a>
-                                        <a th:href="@{/task/doitrangthai(id=${task.id}, status='DOING')}" class="btn btn-warning text-dark border-warning" title="Đang Làm">D</a>
-                                        <a th:href="@{/task/doitrangthai(id=${task.id}, status='DONE')}" class="btn btn-success border-success" title="Xong">D</a>
+                                        <a th:href="@{/task/doitrangthai(id=${task.id}, status='TODO')}" class="btn btn-light border">T</a>
+                                        <a th:href="@{/task/doitrangthai(id=${task.id}, status='DOING')}" class="btn btn-warning text-dark border-warning">D</a>
+                                        <a th:href="@{/task/doitrangthai(id=${task.id}, status='DONE')}" class="btn btn-success border-success">D</a>
                                     </div>
-                                    <a th:if="${userRole == 'LEADER'}" th:href="@{/task/sua(id=${task.id})}" class="btn btn-sm btn-light border text-primary ms-2 shadow-sm" title="Sửa việc"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:if="${userRole == 'LEADER'}" th:href="@{/task/xoa(id=${task.id})}" class="btn btn-sm btn-light border text-danger ms-1 shadow-sm" onclick="return confirm('Chắc chắn xóa?');" title="Xóa việc"><i class="fa-solid fa-trash"></i></a>
+                                    <a th:href="@{/task/sua(id=${task.id})}" class="btn btn-sm btn-light border text-primary ms-2 shadow-sm"><i class="fa-solid fa-pen"></i></a>
+                                    <a th:href="@{/task/xoa(id=${task.id})}" class="btn btn-sm btn-light border text-danger ms-1 shadow-sm" onclick="return confirm('Chắc chắn xóa?');"><i class="fa-solid fa-trash"></i></a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div th:if="${dsNhiemVu.empty}" class="text-center py-5 text-muted">
                         <i class="fa-solid fa-inbox fa-3x mb-3 text-light"></i>
-                        <h5 class="fw-bold">Chưa có công việc nào!</h5>
+                        <h5 class="fw-bold">Chưa có công việc nào hệ thống!</h5>
                     </div>
                 </div>
             </div>
