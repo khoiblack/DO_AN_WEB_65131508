@@ -63,10 +63,30 @@ public class DashboardController {
                 model.addAttribute("dsNhiemVu", nhiemVuRepo.findAll());
             }
         } else {
-            model.addAttribute("dsNhiemVu", nhiemVuRepo.findByNguoiThucHien_Id(userId));
+        	
+            java.util.List<ntu.khoi.models.NhiemVu> userTasks = nhiemVuRepo.findByNguoiThucHien_Id(userId);
+                     
+            long doingCount = userTasks.stream().filter(t -> "DOING".equals(t.getTrangThai())).count();
+                      
+            java.time.LocalDate today = java.time.LocalDate.now();
+            long dueTodayCount = userTasks.stream().filter(t -> today.equals(t.getDeadline()) && !"DONE".equals(t.getTrangThai())).count();
+            
+            long totalTasks = userTasks.size();
+            long doneCount = userTasks.stream().filter(t -> "DONE".equals(t.getTrangThai())).count();
+            int progressPercent = (totalTasks > 0) ? (int) ((doneCount * 100) / totalTasks) : 0;
+
+            
+            model.addAttribute("doingCount", doingCount);
+            model.addAttribute("dueTodayCount", dueTodayCount);
+            model.addAttribute("progressPercent", progressPercent);
+            model.addAttribute("dsNhiemVu", userTasks);
         }
 
-        return "dashboard"; 
+        if ("LEADER".equals(role)) {
+            return "dashboard"; 
+        } else {
+            return "dashboard-member"; 
+        }
     }
  
     @org.springframework.web.bind.annotation.PostMapping("/duan/them")
