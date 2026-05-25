@@ -40,7 +40,7 @@ public class ReportController {
         model.addAttribute("todo", todo);
         model.addAttribute("doing", doing);
         model.addAttribute("done", done);
-        
+        model.addAttribute("dsNhiemVu", dsTask); 
         model.addAttribute("userName", session.getAttribute("USER_NAME"));
         model.addAttribute("userRole", role);
 
