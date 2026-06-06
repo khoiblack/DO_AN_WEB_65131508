@@ -1,48 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cập Nhật Dự Án</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-light">
+<head th:replace="~{fragments :: html_head('Chỉnh Sửa Dự Án - Task Manager')}"></head>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/dashboard"><i class="fa-solid fa-layer-group me-2"></i>HỆ THỐNG QUẢN LÝ CÔNG VIỆC</a>
-            <a href="/dashboard" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-arrow-left me-1"></i>Quay lại Dashboard</a>
-        </div>
-    </nav>
+<body class="bg-light overflow-hidden">
+    <div class="d-flex" style="height: 100vh;">
 
-    <div class="container" style="max-width: 600px;">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white fw-bold text-center py-3">
-                <h5 class="m-0 fw-bold"><i class="fa-solid fa-folder-open me-2"></i>CHỈNH SỬA DỰ ÁN</h5>
+        <div th:replace="~{fragments :: sidebar('dashboard')}"></div>
+
+        <div class="flex-grow-1 bg-light p-5 overflow-auto main-content">
+
+            <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                <a th:href="@{/dashboard}" class="btn btn-light border shadow-sm me-3">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại
+                </a>
+                <h3 class="fw-bold text-dark m-0">
+                    <i class="fa-solid fa-folder-open text-primary me-2"></i>Chỉnh Sửa Dự Án
+                </h3>
             </div>
-            <div class="card-body p-4">
-                <form action="/duan/capnhat" method="POST">
-                    <input type="hidden" name="id" th:value="${duAn.id}">
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tên dự án</label>
-                        <input type="text" name="tenDuAn" th:value="${duAn.tenDuAn}" class="form-control" required>
-                    </div>
+            <div class="card border-0 shadow-sm rounded-3 col-md-8 col-lg-6">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="fw-bold m-0">
+                        <i class="fa-solid fa-pen-to-square me-2"></i>Thông Tin Dự Án
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/duan/capnhat" method="POST">
+                        <input type="hidden" name="id" th:value="${duAn.id}">
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">Mô tả chi tiết</label>
-                        <textarea name="moTa" th:text="${duAn.moTa}" class="form-control" rows="4"></textarea>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên dự án</label>
+                            <input type="text" name="tenDuAn" th:value="${duAn.tenDuAn}"
+                                   class="form-control border-primary" required
+                                   placeholder="Nhập tên dự án...">
+                        </div>
 
-                    <div class="d-flex justify-content-between pt-2">
-                        <a href="/dashboard" class="btn btn-secondary px-4">Hủy bỏ</a>
-                        <button type="submit" class="btn btn-primary fw-bold px-4">LƯU THAY ĐỔI</button>
-                    </div>
-                </form>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Mô tả chi tiết</label>
+                            <textarea name="moTa" th:text="${duAn.moTa}"
+                                      class="form-control" rows="4"
+                                      placeholder="Nhập mô tả dự án..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-2">
+                            <a href="/dashboard" class="btn btn-secondary px-4">
+                                <i class="fa-solid fa-xmark me-1"></i>Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4 shadow-sm">
+                                <i class="fa-solid fa-floppy-disk me-2"></i>LƯU THAY ĐỔI
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
+
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
