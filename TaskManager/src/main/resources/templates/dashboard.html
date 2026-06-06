@@ -2,6 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments :: html_head('Bảng Điều Khiển Admin - Task Manager')}"></head>
 
+<style>
+    .task-link {
+        transition: all 0.2s;
+    }
+    .task-link:hover .task-title-text {
+        text-decoration: underline;
+        color: #0a58ca !important;
+    }
+</style>
+
 <body class="bg-light overflow-hidden">
 
     <div class="d-flex" style="height: 100vh;">
@@ -40,7 +50,7 @@
 
             <div th:if="${dsDuAnDaDong != null and !dsDuAnDaDong.empty}" class="mb-5">
                 <h6 class="fw-bold mb-3 text-secondary text-uppercase" style="letter-spacing: 1px;">
-                    <i class="fa-solid fa-box-archive me-2"></i>Dự án đã lưu trữ / Đóng
+                    <i class="fa-solid fa-box-archive me-2"></i>Dự án đã lưu trữ / Đóng
                 </h6>
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-4" th:each="duAn : ${dsDuAnDaDong}">
@@ -80,10 +90,14 @@
                         <tbody>
                             <tr th:each="task : ${dsNhiemVu}">
                                 <td class="fw-bold text-secondary px-4" th:text="${'#' + task.id}">#1</td>
+                                
                                 <td>
-                                    <div class="fw-bold text-dark" th:text="${task.tieuDe}"></div>
+                                    <a th:href="@{/task/chitiet(id=${task.id})}" class="text-decoration-none task-link" title="Nhấn để xem chi tiết và trao đổi">
+                                        <div class="fw-bold text-primary task-title-text" th:text="${task.tieuDe}"></div>
+                                    </a>
                                     <small class="text-muted" th:text="${task.duAn?.tenDuAn}"></small>
                                 </td>
+                                
                                 <td class="text-danger fw-semibold">
                                     <i class="fa-regular fa-calendar-xmark me-1"></i> <span th:text="${task.deadline}"></span>
                                 </td>
