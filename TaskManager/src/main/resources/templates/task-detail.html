@@ -65,9 +65,15 @@
                                     <span th:text="${task.duAn?.tenDuAn}"></span>
                                 </li>
                                 <li class="mb-3">
-                                    <i class="fa-solid fa-user-tie text-success me-2"></i>
+                                    <i class="fa-solid fa-users text-success me-2"></i>
                                     <strong>Người thực hiện:</strong>
-                                    <span th:text="${task.nguoiThucHien?.hoTen}"></span>
+                                    <div class="mt-2" th:if="${task.dsNguoiThucHien != null and !task.dsNguoiThucHien.empty}">
+                                        <span class="badge bg-info bg-opacity-25 text-info-emphasis border border-info px-2 py-1 me-1 mb-1 d-inline-block" 
+                                              th:each="nd : ${task.dsNguoiThucHien}">
+                                            <i class="fa-solid fa-user me-1"></i> <span th:text="${nd.hoTen}"></span>
+                                        </span>
+                                    </div>
+                                    <span class="badge bg-secondary px-2 py-1 mt-2" th:if="${task.dsNguoiThucHien == null or task.dsNguoiThucHien.empty}">Chưa giao</span>
                                 </li>
                                 <li>
                                     <i class="fa-solid fa-clock text-danger me-2"></i>

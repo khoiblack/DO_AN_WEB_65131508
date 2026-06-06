@@ -65,13 +65,14 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-bold">
-                                <i class="fa-solid fa-user text-success me-1"></i>Giao cho nhân viên
+                                <i class="fa-solid fa-users text-success me-1"></i>Giao cho nhân viên <small class="text-danger fw-normal">(Giữ Ctrl để chọn nhiều)</small>
                             </label>
-                            <select name="nhanVienId" class="form-select">
+                            <select name="nhanVienIds" class="form-select" multiple size="4">
                                 <option th:each="nd : ${dsNguoiDung}"
                                         th:value="${nd.id}"
                                         th:text="${nd.hoTen}"
-                                        th:selected="${nd.id == task.nguoiThucHien?.id}"></option>
+                                        th:selected="${task.dsNguoiThucHien != null and #lists.contains(task.dsNguoiThucHien.![id], nd.id)}">
+                                </option>
                             </select>
                         </div>
 

@@ -30,8 +30,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Giao cho nhân viên</label>
-                            <select name="nhanVienId" class="form-select">
+                            <label class="form-label fw-bold">Giao cho nhân viên <small class="text-danger">(Giữ Ctrl để chọn nhiều)</small></label>
+                            <select name="nhanVienIds" class="form-select" multiple size="3">
                                 <option th:each="nd : ${dsNguoiDung}" th:value="${nd.id}" th:text="${nd.hoTen}"></option>
                             </select>
                         </div>
