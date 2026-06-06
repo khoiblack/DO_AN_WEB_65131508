@@ -127,6 +127,26 @@ public class DashboardController {
         return "redirect:/dashboard";
     }
  
+    @GetMapping("/task/api/doitrangthai")
+    @org.springframework.web.bind.annotation.ResponseBody 
+    public org.springframework.http.ResponseEntity<String> doiTrangThaiAjax(
+            @org.springframework.web.bind.annotation.RequestParam("id") Integer taskId,
+            @org.springframework.web.bind.annotation.RequestParam("status") String status,
+            HttpSession session) {
+        
+        if (session.getAttribute("USER_ID") == null) {
+            return org.springframework.http.ResponseEntity.status(401).body("Chưa đăng nhập");
+        }
+
+        ntu.khoi.models.NhiemVu nv = nhiemVuRepo.findById(taskId).orElse(null);
+        if (nv != null) {
+            nv.setTrangThai(status); 
+            nhiemVuRepo.save(nv); 
+            return org.springframework.http.ResponseEntity.ok("Thành công"); 
+        }
+
+        return org.springframework.http.ResponseEntity.badRequest().body("Lỗi");
+    }
     @org.springframework.web.bind.annotation.PostMapping("/task/them")
     public String themNhiemVuMoi(@org.springframework.web.bind.annotation.RequestParam("tieuDe") String tieuDe,
                                  @org.springframework.web.bind.annotation.RequestParam("noiDung") String noiDung,
