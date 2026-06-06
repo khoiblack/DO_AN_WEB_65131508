@@ -14,13 +14,9 @@ import ntu.khoi.repositories.NhiemVuRepository;
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private NhiemVuRepository nhiemVuRepo;
-
-    @Autowired
-    private DuAnRepository duAnRepo;
-    @Autowired
-    private NguoiDungRepository nguoiDungRepo;
+    @Autowired private NhiemVuRepository nhiemVuRepo;
+    @Autowired private DuAnRepository duAnRepo;
+    @Autowired private NguoiDungRepository nguoiDungRepo;
 
     @GetMapping("/dashboard")
     public String showDashboard(@org.springframework.web.bind.annotation.RequestParam(value = "duAnId", required = false) Integer duAnId, 
@@ -28,9 +24,7 @@ public class DashboardController {
                                 Model model) {
         
         Integer userId = (Integer) session.getAttribute("USER_ID");
-        if (userId == null) {
-            return "redirect:/login";
-        }
+        if (userId == null) return "redirect:/login";
 
         String role = (String) session.getAttribute("USER_ROLE");
         String name = (String) session.getAttribute("USER_NAME");
@@ -38,7 +32,6 @@ public class DashboardController {
         model.addAttribute("userName", name);
         model.addAttribute("userRole", role);
 
-        
         if ("LEADER".equals(role)) {
             java.util.List<ntu.khoi.models.DuAn> tatCaDuAn = duAnRepo.findAll();
             java.util.List<ntu.khoi.models.DuAn> duAnDangMo = new java.util.ArrayList<>();
@@ -64,7 +57,7 @@ public class DashboardController {
             }
         } else {
         	
-            java.util.List<ntu.khoi.models.NhiemVu> userTasks = nhiemVuRepo.findByNguoiThucHien_Id(userId);
+            java.util.List<ntu.khoi.models.NhiemVu> userTasks = nhiemVuRepo.findByDsNguoiThucHien_Id(userId);
                      
             long doingCount = userTasks.stream().filter(t -> "DOING".equals(t.getTrangThai())).count();
                       
@@ -75,7 +68,6 @@ public class DashboardController {
             long doneCount = userTasks.stream().filter(t -> "DONE".equals(t.getTrangThai())).count();
             int progressPercent = (totalTasks > 0) ? (int) ((doneCount * 100) / totalTasks) : 0;
 
-            
             model.addAttribute("doingCount", doingCount);
             model.addAttribute("dueTodayCount", dueTodayCount);
             model.addAttribute("progressPercent", progressPercent);
@@ -89,16 +81,12 @@ public class DashboardController {
         }
     }
  
-    @org.springframework.web.bind.annotation.PostMapping("/duan/them")
+    @PostMapping("/duan/them")
     public String themDuAnMoi(@org.springframework.web.bind.annotation.RequestParam("tenDuAn") String tenDuAn,
                               @org.springframework.web.bind.annotation.RequestParam("moTa") String moTa,
                               HttpSession session) {
-        
         String role = (String) session.getAttribute("USER_ROLE");
-        if (!"LEADER".equals(role)) {
-            return "redirect:/dashboard";
-        }
-        
+        if (!"LEADER".equals(role)) return "redirect:/dashboard";
         
         ntu.khoi.models.DuAn da = new ntu.khoi.models.DuAn();
         da.setTenDuAn(tenDuAn);
@@ -112,18 +100,13 @@ public class DashboardController {
     public String doiTrangThaiTask(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId,
                                    @org.springframework.web.bind.annotation.RequestParam("status") String status,
                                    HttpSession session) {
-        
-        if (session.getAttribute("USER_ID") == null) {
-            return "redirect:/login";
-        }
+        if (session.getAttribute("USER_ID") == null) return "redirect:/login";
 
-        
         ntu.khoi.models.NhiemVu nv = nhiemVuRepo.findById(taskId).orElse(null);
         if (nv != null) {
             nv.setTrangThai(status); 
             nhiemVuRepo.save(nv); 
         }
-
         return "redirect:/dashboard";
     }
  
@@ -134,9 +117,7 @@ public class DashboardController {
             @org.springframework.web.bind.annotation.RequestParam("status") String status,
             HttpSession session) {
         
-        if (session.getAttribute("USER_ID") == null) {
-            return org.springframework.http.ResponseEntity.status(401).body("Chưa đăng nhập");
-        }
+        if (session.getAttribute("USER_ID") == null) return org.springframework.http.ResponseEntity.status(401).body("Chưa đăng nhập");
 
         ntu.khoi.models.NhiemVu nv = nhiemVuRepo.findById(taskId).orElse(null);
         if (nv != null) {
@@ -144,71 +125,54 @@ public class DashboardController {
             nhiemVuRepo.save(nv); 
             return org.springframework.http.ResponseEntity.ok("Thành công"); 
         }
-
         return org.springframework.http.ResponseEntity.badRequest().body("Lỗi");
     }
-    @org.springframework.web.bind.annotation.PostMapping("/task/them")
+
+    @PostMapping("/task/them")
     public String themNhiemVuMoi(@org.springframework.web.bind.annotation.RequestParam("tieuDe") String tieuDe,
                                  @org.springframework.web.bind.annotation.RequestParam("noiDung") String noiDung,
                                  @org.springframework.web.bind.annotation.RequestParam("deadline") String deadlineStr,
                                  @org.springframework.web.bind.annotation.RequestParam("duAnId") Integer duAnId,
-                                 @org.springframework.web.bind.annotation.RequestParam("nhanVienId") Integer nhanVienId,
+                                 @org.springframework.web.bind.annotation.RequestParam(value = "nhanVienIds", required = false) java.util.List<Integer> nhanVienIds,
                                  HttpSession session) {
         
-        
         String role = (String) session.getAttribute("USER_ROLE");
-        if (!"LEADER".equals(role)) {
-            return "redirect:/dashboard";
-        }
+        if (!"LEADER".equals(role)) return "redirect:/dashboard";
 
-        
         ntu.khoi.models.NhiemVu nv = new ntu.khoi.models.NhiemVu();
         nv.setTieuDe(tieuDe);
         nv.setNoiDung(noiDung);
         nv.setTrangThai("TODO"); 
         nv.setDeadline(java.time.LocalDate.parse(deadlineStr)); 
-
-        
         nv.setDuAn(duAnRepo.findById(duAnId).orElse(null));
         
         
-        nv.setNguoiThucHien(nguoiDungRepo.findById(nhanVienId).orElse(null));
+        if (nhanVienIds != null && !nhanVienIds.isEmpty()) {
+            java.util.List<ntu.khoi.models.NguoiDung> dsNhanVien = nguoiDungRepo.findAllById(nhanVienIds);
+            nv.setDsNguoiThucHien(dsNhanVien);
+        }
 
         nhiemVuRepo.save(nv); 
-
         return "redirect:/dashboard";
     }
  
     @GetMapping("/task/xoa")
-    public String xoaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId,
-                             HttpSession session) {
-        
-        
+    public String xoaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId, HttpSession session) {
         String role = (String) session.getAttribute("USER_ROLE");
-        if (!"LEADER".equals(role)) {
-            return "redirect:/dashboard"; 
-        }
+        if (!"LEADER".equals(role)) return "redirect:/dashboard"; 
 
         nhiemVuRepo.deleteById(taskId);
-
         return "redirect:/dashboard";
     }
  
     @GetMapping("/task/sua")
-    public String trangSuaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId, 
-                                  HttpSession session, Model model) {
+    public String trangSuaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId, HttpSession session, Model model) {
         String role = (String) session.getAttribute("USER_ROLE");
-        if (!"LEADER".equals(role)) {
-            return "redirect:/dashboard";
-        }
+        if (!"LEADER".equals(role)) return "redirect:/dashboard";
 
-       
         ntu.khoi.models.NhiemVu nv = nhiemVuRepo.findById(taskId).orElse(null);
-        if (nv == null) {
-            return "redirect:/dashboard";
-        }
+        if (nv == null) return "redirect:/dashboard";
 
-        
         model.addAttribute("task", nv);
         model.addAttribute("dsDuAn", duAnRepo.findAll());
         model.addAttribute("dsNguoiDung", nguoiDungRepo.findAll());
@@ -218,19 +182,17 @@ public class DashboardController {
         return "sua-task"; 
     }
 
-   
     @PostMapping("/task/capnhat")
     public String capNhatNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId,
                                  @org.springframework.web.bind.annotation.RequestParam("tieuDe") String tieuDe,
                                  @org.springframework.web.bind.annotation.RequestParam("noiDung") String noiDung,
                                  @org.springframework.web.bind.annotation.RequestParam("deadline") String deadlineStr,
                                  @org.springframework.web.bind.annotation.RequestParam("duAnId") Integer duAnId,
-                                 @org.springframework.web.bind.annotation.RequestParam("nhanVienId") Integer nhanVienId,
+                                 @org.springframework.web.bind.annotation.RequestParam(value = "nhanVienIds", required = false) java.util.List<Integer> nhanVienIds,
                                  HttpSession session) {
+        
         String role = (String) session.getAttribute("USER_ROLE");
-        if (!"LEADER".equals(role)) {
-            return "redirect:/dashboard";
-        }
+        if (!"LEADER".equals(role)) return "redirect:/dashboard";
 
         ntu.khoi.models.NhiemVu nv = nhiemVuRepo.findById(taskId).orElse(null);
         if (nv != null) {
@@ -238,11 +200,17 @@ public class DashboardController {
             nv.setNoiDung(noiDung);
             nv.setDeadline(java.time.LocalDate.parse(deadlineStr));
             nv.setDuAn(duAnRepo.findById(duAnId).orElse(null));
-            nv.setNguoiThucHien(nguoiDungRepo.findById(nhanVienId).orElse(null));
+            
+            
+            if (nhanVienIds != null && !nhanVienIds.isEmpty()) {
+                java.util.List<ntu.khoi.models.NguoiDung> dsNhanVien = nguoiDungRepo.findAllById(nhanVienIds);
+                nv.setDsNguoiThucHien(dsNhanVien);
+            } else {
+                nv.getDsNguoiThucHien().clear(); 
+            }
             
             nhiemVuRepo.save(nv); 
         }
-
         return "redirect:/dashboard";
     }
  
@@ -250,17 +218,13 @@ public class DashboardController {
     public String xoaDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id, HttpSession session) {
         if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
 
-        
         java.util.List<ntu.khoi.models.NhiemVu> dsTaskTrongDuAn = nhiemVuRepo.findByDuAn_Id(id);
         nhiemVuRepo.deleteAll(dsTaskTrongDuAn);
-
-        
         duAnRepo.deleteById(id);
         
         return "redirect:/dashboard";
     }
 
-   
     @GetMapping("/duan/sua")
     public String trangSuaDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id, HttpSession session, Model model) {
         if (!"LEADER".equals(session.getAttribute("USER_ROLE"))) return "redirect:/dashboard";
@@ -275,7 +239,6 @@ public class DashboardController {
         return "sua-duan"; 
     }
 
-    
     @PostMapping("/duan/capnhat")
     public String capNhatDuAn(@org.springframework.web.bind.annotation.RequestParam("id") Integer id,
                               @org.springframework.web.bind.annotation.RequestParam("tenDuAn") String tenDuAn,

@@ -22,7 +22,8 @@ public class NguoiDung {
     private String vaiTro; 
 
     @JsonIgnore
-    @OneToMany(mappedBy = "nguoiThucHien")
+ 
+    @ManyToMany(mappedBy = "dsNguoiThucHien", cascade = CascadeType.ALL)
     private List<NhiemVu> dsNhiemVu;
 
 	public Integer getId() {
