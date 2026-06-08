@@ -136,11 +136,19 @@ public class DashboardController {
                                  @org.springframework.web.bind.annotation.RequestParam("deadline") String deadlineStr,
                                  @org.springframework.web.bind.annotation.RequestParam("duAnId") Integer duAnId,
                                  @org.springframework.web.bind.annotation.RequestParam(value = "nhanVienIds", required = false) java.util.List<Integer> nhanVienIds,
-                                 HttpSession session) {
+                                 HttpSession session,
+                                 org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) { 
         
         String role = (String) session.getAttribute("USER_ROLE");
         if (!"LEADER".equals(role)) return "redirect:/dashboard";
 
+        
+        if (nhiemVuRepo.existsByTieuDeAndDuAn_Id(tieuDe, duAnId)) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi: Công việc '" + tieuDe + "' đã tồn tại trong dự án này!");
+            return "redirect:/dashboard"; 
+        }
+
+        
         ntu.khoi.models.NhiemVu nv = new ntu.khoi.models.NhiemVu();
         nv.setTieuDe(tieuDe);
         nv.setNoiDung(noiDung);
@@ -148,22 +156,43 @@ public class DashboardController {
         nv.setDeadline(java.time.LocalDate.parse(deadlineStr)); 
         nv.setDuAn(duAnRepo.findById(duAnId).orElse(null));
         
-        
         if (nhanVienIds != null && !nhanVienIds.isEmpty()) {
             java.util.List<ntu.khoi.models.NguoiDung> dsNhanVien = nguoiDungRepo.findAllById(nhanVienIds);
             nv.setDsNguoiThucHien(dsNhanVien);
         }
 
+        
         nhiemVuRepo.save(nv); 
+        
+        redirectAttributes.addFlashAttribute("successMsg", "Thêm công việc thành công!");
         return "redirect:/dashboard";
     }
  
     @GetMapping("/task/xoa")
-    public String xoaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId, HttpSession session) {
+    public String xoaNhiemVu(@org.springframework.web.bind.annotation.RequestParam("id") Integer taskId, 
+                             HttpSession session,
+                             org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+                             
         String role = (String) session.getAttribute("USER_ROLE");
         if (!"LEADER".equals(role)) return "redirect:/dashboard"; 
 
-        nhiemVuRepo.deleteById(taskId);
+        ntu.khoi.models.NhiemVu nv = nhiemVuRepo.findById(taskId).orElse(null);
+        if (nv != null) {
+            
+            if (nv.getDsNguoiThucHien() != null) {
+                nv.getDsNguoiThucHien().clear();
+                nhiemVuRepo.save(nv);
+            }
+            
+            try {
+               
+                nhiemVuRepo.delete(nv);
+                redirectAttributes.addFlashAttribute("successMsg", "Đã xóa công việc thành công!");
+            } catch (Exception e) {
+                
+                redirectAttributes.addFlashAttribute("errorMsg", "⛔ Không thể xóa! Công việc này đang có dữ liệu trao đổi (bình luận). Vui lòng vào chi tiết xóa bình luận trước.");
+            }
+        }
         return "redirect:/dashboard";
     }
  
@@ -282,7 +311,15 @@ public class DashboardController {
     }
     @GetMapping("/task/ai-goi-y")
     @org.springframework.web.bind.annotation.ResponseBody
-    public String goiYAI(@org.springframework.web.bind.annotation.RequestParam("tieuDe") String tieuDe) {
-        return aiService.phanRaCongViec(tieuDe);
-}
+    public String goiYAI(@org.springframework.web.bind.annotation.RequestParam("tieuDe") String tieuDe,
+                         @org.springframework.web.bind.annotation.RequestParam("duAnId") Integer duAnId) {
+        
+        
+        ntu.khoi.models.DuAn da = duAnRepo.findById(duAnId).orElse(null);
+        String tenDuAn = (da != null) ? da.getTenDuAn() : "Dự án mặc định";
+        String moTaDuAn = (da != null) ? da.getMoTa() : "Không có mô tả";
+        
+        
+        return aiService.phanRaCongViec(tieuDe, tenDuAn, moTaDuAn);
+    }
     }
