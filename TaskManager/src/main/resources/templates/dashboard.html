@@ -88,11 +88,30 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold m-0" style="color: #2c3e50;">
-                    <i class="fa-solid fa-list-check me-2 text-success"></i>QUẢN LÝ TIẾN ĐỘ NHIỆM VỤ
-                    <span th:if="${selectedDuAnId != null}" class="badge bg-warning text-dark fs-6 ms-2 fw-normal rounded-pill">Đang lọc theo dự án</span>
-                </h5>
+            <div class="d-flex justify-content-between align-items-end mb-3 bg-white p-3 rounded-3 shadow-sm border">
+                <div>
+                    <h5 class="fw-bold m-0" style="color: #2c3e50;">
+                        <i class="fa-solid fa-list-check me-2 text-success"></i>QUẢN LÝ TIẾN ĐỘ NHIỆM VỤ
+                        <span th:if="${selectedDuAnId != null}" class="badge bg-warning text-dark fs-6 ms-2 fw-normal rounded-pill">Đang lọc theo dự án</span>
+                    </h5>
+                </div>
+                
+                <form action="/dashboard" method="GET" class="d-flex gap-2 align-items-center m-0">
+                    <input type="hidden" name="duAnId" th:if="${selectedDuAnId != null}" th:value="${selectedDuAnId}">
+                    
+                    <input type="text" name="keyword" class="form-control form-control-sm border-secondary" 
+                           placeholder="🔍 Tìm tiêu đề..." th:value="${keyword}" style="width: 250px;">
+                           
+                    <select name="status" class="form-select form-select-sm border-secondary" style="width: 180px;">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="TODO" th:selected="${status == 'TODO'}">Cần làm (TODO)</option>
+                        <option value="DOING" th:selected="${status == 'DOING'}">Đang làm (DOING)</option>
+                        <option value="DONE" th:selected="${status == 'DONE'}">Hoàn thành (DONE)</option>
+                    </select>
+                    
+                    <button type="submit" class="btn btn-sm btn-dark px-3 fw-bold">LỌC</button>
+                    <a href="/dashboard" class="btn btn-sm btn-outline-danger" title="Xóa bộ lọc"><i class="fa-solid fa-xmark"></i></a>
+                </form>
             </div>
 
             <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
@@ -188,6 +207,22 @@
                             </tr>
                         </tbody>
                     </table>
+                    <nav th:if="${totalPages > 1}" class="mt-4 mb-2">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link shadow-sm" th:href="@{/dashboard(page=${currentPage - 1}, duAnId=${selectedDuAnId}, keyword=${keyword}, status=${status})}">« Trước</a>
+                            </li>
+                            
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                                th:classappend="${currentPage == i ? 'active' : ''}">
+                                <a class="page-link shadow-sm" th:href="@{/dashboard(page=${i}, duAnId=${selectedDuAnId}, keyword=${keyword}, status=${status})}" th:text="${i + 1}">1</a>
+                            </li>
+                            
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link shadow-sm" th:href="@{/dashboard(page=${currentPage + 1}, duAnId=${selectedDuAnId}, keyword=${keyword}, status=${status})}">Sau »</a>
+                            </li>
+                        </ul>
+                    </nav>
                     <div th:if="${dsNhiemVu.empty}" class="text-center py-5 text-muted">
                         <i class="fa-solid fa-inbox fa-3x mb-3 text-light"></i>
                         <h5 class="fw-bold">Chưa có công việc nào trong hệ thống!</h5>

@@ -21,7 +21,10 @@ public class DashboardController {
     @Autowired private AiService aiService;
 
     @GetMapping("/dashboard")
-    public String showDashboard(@org.springframework.web.bind.annotation.RequestParam(value = "duAnId", required = false) Integer duAnId, 
+    public String showDashboard(@org.springframework.web.bind.annotation.RequestParam(value = "duAnId", required = false) Integer duAnId,
+                                @org.springframework.web.bind.annotation.RequestParam(value = "keyword", required = false) String keyword,
+                                @org.springframework.web.bind.annotation.RequestParam(value = "status", required = false) String status,
+                                @org.springframework.web.bind.annotation.RequestParam(value = "page", defaultValue = "0") int page,
                                 HttpSession session, 
                                 Model model) {
         
@@ -29,10 +32,12 @@ public class DashboardController {
         if (userId == null) return "redirect:/login";
 
         String role = (String) session.getAttribute("USER_ROLE");
-        String name = (String) session.getAttribute("USER_NAME");
-        
-        model.addAttribute("userName", name);
+        model.addAttribute("userName", session.getAttribute("USER_NAME"));
         model.addAttribute("userRole", role);
+
+        
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, 10, org.springframework.data.domain.Sort.by("id").descending());
+        org.springframework.data.domain.Page<ntu.khoi.models.NhiemVu> taskPage;
 
         if ("LEADER".equals(role)) {
             java.util.List<ntu.khoi.models.DuAn> tatCaDuAn = duAnRepo.findAll();
@@ -46,26 +51,19 @@ public class DashboardController {
                     duAnDaDong.add(d); 
                 }
             }
-            
             model.addAttribute("dsDuAn", duAnDangMo); 
             model.addAttribute("dsDuAnDaDong", duAnDaDong); 
             model.addAttribute("dsNguoiDung", nguoiDungRepo.findAll()); 
             
-            if (duAnId != null) {
-                model.addAttribute("dsNhiemVu", nhiemVuRepo.findByDuAn_Id(duAnId));
-                model.addAttribute("selectedDuAnId", duAnId);
-            } else {
-                model.addAttribute("dsNhiemVu", nhiemVuRepo.findAll());
-            }
-        } else {
-        	
-            java.util.List<ntu.khoi.models.NhiemVu> userTasks = nhiemVuRepo.findByDsNguoiThucHien_Id(userId);
-                     
-            long doingCount = userTasks.stream().filter(t -> "DOING".equals(t.getTrangThai())).count();
-                      
-            java.time.LocalDate today = java.time.LocalDate.now();
-            long dueTodayCount = userTasks.stream().filter(t -> today.equals(t.getDeadline()) && !"DONE".equals(t.getTrangThai())).count();
             
+            taskPage = nhiemVuRepo.locVaPhanTrangLeader(duAnId, keyword, status, pageable);
+            model.addAttribute("selectedDuAnId", duAnId);
+
+        } else {
+            
+            java.util.List<ntu.khoi.models.NhiemVu> userTasks = nhiemVuRepo.findByDsNguoiThucHien_Id(userId);
+            long doingCount = userTasks.stream().filter(t -> "DOING".equals(t.getTrangThai())).count();
+            long dueTodayCount = userTasks.stream().filter(t -> java.time.LocalDate.now().equals(t.getDeadline()) && !"DONE".equals(t.getTrangThai())).count();
             long totalTasks = userTasks.size();
             long doneCount = userTasks.stream().filter(t -> "DONE".equals(t.getTrangThai())).count();
             int progressPercent = (totalTasks > 0) ? (int) ((doneCount * 100) / totalTasks) : 0;
@@ -73,14 +71,19 @@ public class DashboardController {
             model.addAttribute("doingCount", doingCount);
             model.addAttribute("dueTodayCount", dueTodayCount);
             model.addAttribute("progressPercent", progressPercent);
-            model.addAttribute("dsNhiemVu", userTasks);
+            
+            
+            taskPage = nhiemVuRepo.locVaPhanTrangMember(userId, keyword, status, pageable);
         }
 
-        if ("LEADER".equals(role)) {
-            return "dashboard"; 
-        } else {
-            return "dashboard-member"; 
-        }
+        
+        model.addAttribute("dsNhiemVu", taskPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", taskPage.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
+
+        return "LEADER".equals(role) ? "dashboard" : "dashboard-member"; 
     }
  
     @PostMapping("/duan/them")
