@@ -12,4 +12,5 @@ public interface NhiemVuRepository extends JpaRepository<NhiemVu, Integer> {
     
     
     List<NhiemVu> findByDsNguoiThucHien_Id(Integer id);
+    boolean existsByTieuDeAndDuAn_Id(String tieuDe, Integer duAnId);
 }
