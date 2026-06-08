@@ -58,6 +58,17 @@ public class DashboardController {
             
             taskPage = nhiemVuRepo.locVaPhanTrangLeader(duAnId, keyword, status, pageable);
             model.addAttribute("selectedDuAnId", duAnId);
+            java.util.List<ntu.khoi.models.NhiemVu> allTasksForStats = (duAnId != null) 
+                    ? nhiemVuRepo.findByDuAn_Id(duAnId) 
+                    : nhiemVuRepo.findAll();
+                    
+            long todoCount = allTasksForStats.stream().filter(t -> "TODO".equals(t.getTrangThai())).count();
+            long doingCount = allTasksForStats.stream().filter(t -> "DOING".equals(t.getTrangThai())).count();
+            long doneCount = allTasksForStats.stream().filter(t -> "DONE".equals(t.getTrangThai())).count();
+            
+            model.addAttribute("todoCount", todoCount);
+            model.addAttribute("doingCount", doingCount);
+            model.addAttribute("doneCount", doneCount);
 
         } else {
             

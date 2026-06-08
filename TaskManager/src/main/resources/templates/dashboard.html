@@ -88,6 +88,49 @@
                 </div>
             </div>
 
+            <div class="row mb-4 align-items-stretch">
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 rounded-3 h-100">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-secondary mb-3">
+                                <i class="fa-solid fa-chart-pie me-2"></i>Tỷ lệ Công việc <span th:if="${selectedDuAnId != null}"> (Theo dự án)</span>
+                            </h6>
+                            <div style="position: relative; height: 180px; width: 100%;">
+                                <canvas id="taskChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="row g-3 h-100">
+                        <div class="col-sm-4">
+                            <div class="card bg-secondary text-white border-0 shadow-sm h-100 d-flex justify-content-center align-items-center" style="opacity: 0.9;">
+                                <div class="text-center p-3">
+                                    <h1 class="fw-bold mb-0 display-5" th:text="${todoCount != null ? todoCount : 0}">0</h1>
+                                    <span class="text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">Cần làm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="card bg-warning text-dark border-0 shadow-sm h-100 d-flex justify-content-center align-items-center" style="opacity: 0.9;">
+                                <div class="text-center p-3">
+                                    <h1 class="fw-bold mb-0 display-5" th:text="${doingCount != null ? doingCount : 0}">0</h1>
+                                    <span class="text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">Đang làm</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="card bg-success text-white border-0 shadow-sm h-100 d-flex justify-content-center align-items-center" style="opacity: 0.9;">
+                                <div class="text-center p-3">
+                                    <h1 class="fw-bold mb-0 display-5" th:text="${doneCount != null ? doneCount : 0}">0</h1>
+                                    <span class="text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">Hoàn thành</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="d-flex justify-content-between align-items-end mb-3 bg-white p-3 rounded-3 shadow-sm border">
                 <div>
                     <h5 class="fw-bold m-0" style="color: #2c3e50;">
@@ -237,43 +280,84 @@
     <div th:replace="~{modal-them-task :: fragmentThemTask}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-function goiAI() {
-    let tieuDe = document.getElementById('tieuDeInput').value;
     
-    
-    let duAnSelect = document.querySelector('select[name="duAnId"]');
-    let duAnId = duAnSelect ? duAnSelect.value : "";
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            let todo = /*[[${todoCount != null ? todoCount : 0}]]*/ 0;
+            let doing = /*[[${doingCount != null ? doingCount : 0}]]*/ 0;
+            let done = /*[[${doneCount != null ? doneCount : 0}]]*/ 0;
 
-    if(!tieuDe) { 
-        alert("Nhập tiêu đề công việc trước nhé!"); 
-        return; 
-    }
-    if(!duAnId) { 
-        alert("Vui lòng chọn Dự án trước khi dùng AI!"); 
-        return; 
-    }
-    
-    
-    let btn = event.target;
-    let originalText = btn.innerText;
-    btn.innerText = "Đang suy nghĩ...";
-    btn.disabled = true;
+            let dataValues = [todo, doing, done];
+            let bgColors = ['#6c757d', '#ffc107', '#198754']; 
 
-    
-    fetch('/task/ai-goi-y?tieuDe=' + encodeURIComponent(tieuDe) + '&duAnId=' + duAnId)
-        .then(res => res.text())
-        .then(data => {
-            document.querySelector('textarea[name="noiDung"]').value = data;
-            btn.innerText = originalText;
-            btn.disabled = false;
-        })
-        .catch(err => {
-            alert("Có lỗi xảy ra: " + err);
-            btn.innerText = originalText;
-            btn.disabled = false;
+            // Vẽ vòng tròn xám nếu chưa có dữ liệu
+            if (todo === 0 && doing === 0 && done === 0) {
+                dataValues = [1];
+                bgColors = ['#e9ecef'];
+            }
+
+            const ctx = document.getElementById('taskChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: (todo === 0 && doing === 0 && done === 0) ? ['Chưa có dữ liệu'] : ['Cần làm', 'Đang làm', 'Hoàn thành'],
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: bgColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
         });
-}
-</script>
+    </script>
+    <script>
+    function goiAI() {
+        let tieuDe = document.getElementById('tieuDeInput').value;
+        
+        let duAnSelect = document.querySelector('select[name="duAnId"]');
+        let duAnId = duAnSelect ? duAnSelect.value : "";
+
+        if(!tieuDe) { 
+            alert("Nhập tiêu đề công việc trước nhé!"); 
+            return; 
+        }
+        if(!duAnId) { 
+            alert("Vui lòng chọn Dự án trước khi dùng AI!"); 
+            return; 
+        }
+        
+        let btn = event.target;
+        let originalText = btn.innerText;
+        btn.innerText = "Đang suy nghĩ...";
+        btn.disabled = true;
+
+        fetch('/task/ai-goi-y?tieuDe=' + encodeURIComponent(tieuDe) + '&duAnId=' + duAnId)
+            .then(res => res.text())
+            .then(data => {
+                document.querySelector('textarea[name="noiDung"]').value = data;
+                btn.innerText = originalText;
+                btn.disabled = false;
+            })
+            .catch(err => {
+                alert("Có lỗi xảy ra: " + err);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+    }
+    </script>
 </body>
 </html>
