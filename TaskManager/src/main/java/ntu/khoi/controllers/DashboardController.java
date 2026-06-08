@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import ntu.khoi.repositories.DuAnRepository;
 import ntu.khoi.repositories.NguoiDungRepository;
 import ntu.khoi.repositories.NhiemVuRepository;
+import ntu.khoi.services.AiService;
 
 @Controller
 public class DashboardController {
@@ -17,6 +18,7 @@ public class DashboardController {
     @Autowired private NhiemVuRepository nhiemVuRepo;
     @Autowired private DuAnRepository duAnRepo;
     @Autowired private NguoiDungRepository nguoiDungRepo;
+    @Autowired private AiService aiService;
 
     @GetMapping("/dashboard")
     public String showDashboard(@org.springframework.web.bind.annotation.RequestParam(value = "duAnId", required = false) Integer duAnId, 
@@ -278,4 +280,9 @@ public class DashboardController {
         }
         return "redirect:/dashboard";
     }
+    @GetMapping("/task/ai-goi-y")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public String goiYAI(@org.springframework.web.bind.annotation.RequestParam("tieuDe") String tieuDe) {
+        return aiService.phanRaCongViec(tieuDe);
 }
+    }
