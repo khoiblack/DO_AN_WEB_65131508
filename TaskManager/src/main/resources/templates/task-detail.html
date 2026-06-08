@@ -53,8 +53,10 @@
 
                             <h3 class="fw-bold text-dark mb-3" th:text="${task.tieuDe}">Tiêu đề nhiệm vụ</h3>
 
+                            
                             <p class="text-muted mb-4"
-                               th:text="${task.noiDung != null ? task.noiDung : 'Không có mô tả chi tiết.'}"></p>
+   								th:utext="${task.noiDung != null ? #strings.replace(#strings.replace(task.noiDung, '&lt;br&gt;', ''), '<br>', '') : 'Không có mô tả chi tiết.'}"
+   								style="white-space: pre-wrap; line-height: 1.8; color: #2c3e50 !important; font-size: 0.95rem;"></p>
 
                             <hr>
 
