@@ -11,5 +11,5 @@ public interface NhiemVuRepository extends JpaRepository<NhiemVu, Integer> {
     List<NhiemVu> findByDuAn_Id(Integer id);
     
     
-    List<NhiemVu> findByNguoiThucHien_Id(Integer id);
+    List<NhiemVu> findByDsNguoiThucHien_Id(Integer id);
 }
