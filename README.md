@@ -70,6 +70,19 @@ spring.jpa.hibernate.ddl-auto=update
 | :---: | :---: |:---: |
 | <img src="https://github.com/user-attachments/assets/c98508d7-3eee-428c-bdac-f8a9002ba7f7" width="400"> | <img src="https://github.com/user-attachments/assets/d89b46b6-a03e-450d-8312-04eee0bc7699" width="400"> |  <img src="https://github.com/user-attachments/assets/7de398fd-6cef-4ba9-ab57-c01a83e95273" width="400"> |
 
+## 📂 Cấu trúc thư mục (Folder Structure)
+```text
+src/main/java/ntu/khoi/
+ ├── controllers/       # Xử lý HTTP Request (Dashboard, Login, Task, User...)
+ ├── models/            # Lớp ánh xạ Cơ sở dữ liệu (DuAn, NguoiDung, NhiemVu, BinhLuan)
+ ├── repositories/      # Giao tiếp với Database qua Spring Data JPA
+ └── services/          # Xử lý logic nghiệp vụ (Tích hợp AiService gọi Gemini API)
+
+src/main/resources/
+ ├── static/            # Chứa các tài nguyên tĩnh (CSS, JS, hình ảnh)
+ ├── templates/         # Giao diện HTML (Thymeleaf fragments, views)
+ └── application.properties # Cấu hình môi trường Spring Boot & MySQL Database
+
 
 
 
