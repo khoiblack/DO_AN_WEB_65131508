@@ -40,4 +40,24 @@ Dự án được phân quyền chặt chẽ với 2 vai trò chính: **LEADER**
 
 **Bước 1: Clone dự án về máy**
 ```bash
-git clone [https://github.com/khoiblack/Ten-Repo-Cua-Ban.git](https://github.com/khoiblack/Ten-Repo-Cua-Ban.git)
+git clone [https://github.com/khoiblack/DO_AN_WEB_65131508.git]
+```
+**Bước 2: Cài đặt Cơ sở dữ liệu (Database)**
+
+Mở XAMPP, khởi động module Apache và MySQL.
+
+Truy cập http://localhost/phpmyadmin/.
+
+Tạo cơ sở dữ liệu mới với tên task_manager_db.
+
+Import file task_manager_db (1).sql (nằm trong thư mục gốc của project) vào cơ sở dữ liệu vừa tạo.
+
+**Bước 3: Cấu hình kết nối (application.properties)**
+Mở file src/main/resources/application.properties và đảm bảo cấu hình khớp với MySQL của bạn:
+```bash
+spring.datasource.url=jdbc:mysql://localhost:3306/task_manager_db
+spring.datasource.username=root
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+```
+📸 Giao diện hệ thống (Screenshots)
