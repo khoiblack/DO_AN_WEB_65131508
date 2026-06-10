@@ -13,7 +13,7 @@ public class AiService {
     private String apiKey;
 
     public String phanRaCongViec(String tieuDe, String tenDuAn, String moTaDuAn) {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=" + apiKey;        
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" + apiKey;        
         
         
      
