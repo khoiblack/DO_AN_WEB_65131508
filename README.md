@@ -5,7 +5,7 @@
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23005C0F.svg?style=for-the-badge&logo=Thymeleaf&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-> **Đồ án môn học:** Phát Triển Ứng Dụng Web (Web 2)
+> **Đồ án môn học:** Đồ Án Web 
 > 
 > **Trường:** Đại học Nha Trang (NTU) - Khoa Công Nghệ Thông Tin
 
