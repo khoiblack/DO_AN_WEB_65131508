@@ -60,4 +60,21 @@ spring.datasource.username=root
 spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=update
 ```
-📸 Giao diện hệ thống (Screenshots)
+## 📸 Giao diện màn hình (Screenshots)
+| Trang Đăng Nhập | Trang Bảng điều khiển (Dashboard)  |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/dd8ba094-d976-4679-a817-2987ad48e429" width="400"> | <img src="https://github.com/user-attachments/assets/95dcbc06-92ea-4ed7-b68f-b6ef38488217" width="400"> |
+
+
+| Chức năng Thêm nhiệm vụ & Tích hợp AI  | Trang Chi tiết nhiệm vụ và Bình luận  | Trang Thống kê (Dành riêng cho Leader) |
+| :---: | :---: |:---: |
+| <img src="https://github.com/user-attachments/assets/c98508d7-3eee-428c-bdac-f8a9002ba7f7" width="400"> | <img src="https://github.com/user-attachments/assets/d89b46b6-a03e-450d-8312-04eee0bc7699" width="400"> |  <img src="https://github.com/user-attachments/assets/7de398fd-6cef-4ba9-ab57-c01a83e95273" width="400"> |
+
+
+
+
+
+
+
+
+
